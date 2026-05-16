@@ -1,0 +1,26 @@
+// Prisma schema base.
+// Define tus modelos debajo de datasource db.
+
+// Ejemplo:
+// model Example {
+//   id Int @id @default(autoincrement())
+//   name String
+// }
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Define tus modelos aqui.
+
+model Recipe {
+  id String @id @default(uuid())
+  title String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
