@@ -21,6 +21,31 @@ datasource db {
 model Recipe {
   id String @id @default(uuid())
   title String
+  category String?
+  description String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  ingredients Ingredient[]
+  steps Step[]
+}
+
+model Ingredient {
+  id String @id @default(uuid())
+  name String
+  qty Float
+  unit String
+  
+  recipeId String
+  recipe Recipe @relation(fields: [recipeId], references: [id])
+}
+
+model Step {
+  id String @id @default(uuid())
+  order Int
+  text String
+
+  recipeId String
+  recipe Recipe @relation(fields: [recipeId], references: [id])
+
 }
