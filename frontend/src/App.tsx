@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import RecipesListView from "./RecipesListView";
 import RecipeDetails from "./RecipeDetails";
 import RecipeEditorView from "./RecipeEditorView";
+import type { RecipeFormType } from "./types/recipes";
 
 export type RecipeType = {
   id: string
@@ -28,14 +29,19 @@ function App() {
     getRecipes();
   }, [])
 
-  async function addRecipe(title: string) {
-    if (!title) return;
+  async function addRecipe(recipe: RecipeFormType ) {
+    if (!recipe.title) return;
     const resRecipe = await fetch("http://localhost:3000/api/recipes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ title })
+      body: JSON.stringify({ 
+        title: recipe.title,
+        igredients: [],
+        steps: []
+        
+       })
     });
 
     const dataRecipe = await resRecipe.json();
@@ -115,7 +121,9 @@ function App() {
         )}
 
         {currentView === "form" && (
-          <RecipeEditorView openListView={openListView} />
+          <RecipeEditorView 
+          openListView={openListView}
+          addRecipe={addRecipe}/>
         )}
       </section>
     </main>

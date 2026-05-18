@@ -1,9 +1,22 @@
+import { useState } from "react";
+import type { RecipeFormType } from "./types/recipes";
+ 
+
 type RecipeEditorViewProps = {
     openListView: () => void
+    addRecipe: (recipe: RecipeFormType) => void
 }
 
 function RecipeEditorView(props: RecipeEditorViewProps) {
-    
+
+    const [formData, setFormData] = useState<RecipeFormType>({
+        title: "",
+        category: "",
+        description: "",
+        ingredients: [],
+        step: []
+    })
+
     return (
         <article className="recipe-details recipe-form-view">
             <header className="recipe-details-header form-view-header">
@@ -13,7 +26,10 @@ function RecipeEditorView(props: RecipeEditorViewProps) {
                 </div>
                 <div className="view-actions">
                     <button type="button" onClick={props.openListView}>Cancelar</button>
-                    <button type="button">Guardar</button>
+                    <button type="button"
+                    onClick={() => {
+                        props.addRecipe(formData)
+                    }}>Guardar</button>
                 </div>
             </header>
 
@@ -22,7 +38,15 @@ function RecipeEditorView(props: RecipeEditorViewProps) {
                 <div className="form-grid">
                     <label>
                         Titulo
-                        <input type="text" placeholder="Nombre de la receta" />
+                        <input type="text" placeholder="Nombre de la receta"
+                            value={formData.title}
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    title: e.target.value
+                                })
+                            }}
+                        />
                     </label>
 
                     <label>
