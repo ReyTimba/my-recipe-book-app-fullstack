@@ -19,7 +19,11 @@ app.get("/api/health", (req: Request, res: Response) => {
 });
 
 app.get("/api/recipes", async (req: Request, res: Response) => {
-  const recipes = await prisma.recipe.findMany({});
+  const recipes = await prisma.recipe.findMany({
+    include: {
+      ingredients: true
+    }
+  });
   res.status(200).json(recipes)
 });
 
@@ -30,9 +34,26 @@ app.post("/api/recipes", async (req: Request, res: Response) => {
   if (!isValidTitle) {
     return res.status(400).json({msg: "err_title"})
   };
-
+  const reqIngredient = req.body.ingredients;
+  if (!Array.isArray(reqIngredient)) {
+    return res.status(400).json({msg: "err_no_array"})
+  };
+  const ingredientsToCreate = reqIngredient.map((ingredient) => ({
+    name: ingredient.name,
+    qty: ingredient.qty,
+    unit: ingredient.unit
+  }))
+  
   const newRecipe = await prisma.recipe.create({
-    data: {title: reqTitle.trim()},
+    data: {
+      title: reqTitle.trim(),
+      ingredients: {
+        create: ingredientsToCreate
+      }
+    },
+    include: {
+      ingredients: true
+    }
   });
 
   res.status(201).json(newRecipe);

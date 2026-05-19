@@ -37,7 +37,7 @@ model Ingredient {
   unit String
   
   recipeId String
-  recipe Recipe @relation(fields: [recipeId], references: [id])
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 }
 
 model Step {
@@ -46,6 +46,6 @@ model Step {
   text String
 
   recipeId String
-  recipe Recipe @relation(fields: [recipeId], references: [id])
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
 }

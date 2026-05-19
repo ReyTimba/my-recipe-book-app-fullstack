@@ -1,14 +1,14 @@
-import type { RecipeType } from "./App";
-
+import type { formMode, RecipeType } from "./types/recipes";
 
 type RecipeDetails = {
     selRecipe: RecipeType | null
     openListView: () => void
     openFormView: () => void
+    changeFormMode: (mode: formMode) => void
 }
 
 function RecipeDetails(props: RecipeDetails) {
-    
+
     return (
         <article className="recipe-details recipe-detail-view">
             <header className="recipe-details-header">
@@ -18,7 +18,12 @@ function RecipeDetails(props: RecipeDetails) {
                 </div>
                 <div className="view-actions">
                     <button type="button" onClick={props.openListView}>Volver</button>
-                    <button type="button" onClick={props.openFormView}>Editar</button>
+                    <button type="button" 
+                    onClick={ () => {                        
+                        props.openFormView();
+                        props.changeFormMode("edit")
+                    }}
+                    >Editar</button>
                 </div>
             </header>
 
@@ -30,9 +35,15 @@ function RecipeDetails(props: RecipeDetails) {
             <section className="recipe-section">
                 <h2>Ingredientes</h2>
                 <ul>
-                    <li>Ingrediente 1</li>
-                    <li>Ingrediente 2</li>
-                    <li>Ingrediente 3</li>
+                    {
+                        props.selRecipe?.ingredients.map((ingredient) => {
+                            return (
+                                <li key={ingredient.id}>
+                                    <span>{ingredient.name} {ingredient.qty} {ingredient.unit}</span>
+                                </li>
+                            )
+                        })
+                    }
                 </ul>
             </section>
 

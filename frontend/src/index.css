@@ -368,8 +368,34 @@ button {
 
 .ingredient-row {
     display: grid;
-    grid-template-columns: 1fr 140px auto;
+    grid-template-columns: minmax(180px, 1fr) 110px 150px auto;
     gap: 10px;
+    align-items: end;
+    border: 1px solid #eadfce;
+    border-radius: 8px;
+    padding: 12px;
+    background: #fffdf9;
+}
+
+.ingredient-row input,
+.ingredient-row select {
+    min-height: 42px;
+}
+
+.input-ingredient {
+    min-width: 0;
+}
+
+.input-qty {
+    text-align: right;
+}
+
+.input-unit {
+    color: #394541;
+}
+
+.ingredient-row button {
+    white-space: nowrap;
 }
 
 .recipe-section {

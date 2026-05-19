@@ -1,12 +1,12 @@
-import type { RecipeType } from "./App";
+import type { formMode, RecipeType } from "./types/recipes";
 import RecipesList from "./RecipesList";
-
 
 type RecipesListViewProps = {
     recipes: RecipeType[]
     selectRecipe: (recipeId: string) => void
     openFormView: () => void
     deleteRecipe: (id: string) => void
+    changeFormMode: (mode: formMode) => void
 }
 
 function RecipesListView(props: RecipesListViewProps) {
@@ -18,7 +18,13 @@ function RecipesListView(props: RecipesListViewProps) {
                     <p className="form-view-kicker">Recetas</p>
                     <h1>Biblioteca</h1>
                 </div>
-                <button type="button" className="primary-action" onClick={props.openFormView}>
+                <button type="button" className="primary-action" 
+                onClick={() => {
+                    props.openFormView();
+                    props.changeFormMode("create");
+                }
+                    
+                    }>
                     Nueva receta
                 </button>
             </header>
@@ -41,7 +47,12 @@ function RecipesListView(props: RecipesListViewProps) {
                     </div>
                 </aside>
 
-                <RecipesList recipes={props.recipes} selectRecipe={props.selectRecipe} deleteRecipe={props.deleteRecipe}/>
+                <RecipesList 
+                recipes={props.recipes} 
+                selectRecipe={props.selectRecipe} 
+                deleteRecipe={props.deleteRecipe} 
+                openFormView={props.openFormView}
+                changeFormMode={props.changeFormMode}/>
             </section>
         </article>
     )

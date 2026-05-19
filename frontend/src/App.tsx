@@ -3,13 +3,8 @@ import RecipesListView from "./RecipesListView";
 import RecipeDetails from "./RecipeDetails";
 import RecipeEditorView from "./RecipeEditorView";
 import type { RecipeFormType } from "./types/recipes";
+import type { RecipeType, formMode } from "./types/recipes";
 
-export type RecipeType = {
-  id: string
-  title: string
-  createdAt: string
-  updatedAt: string
-};
 
 type ViewType = "list" | "details" | "form";
 
@@ -18,6 +13,7 @@ function App() {
   const [recipes, setRecipes] = useState<RecipeType[]>([]);
   const [selRecipe, setSelRecipe] = useState<RecipeType | null>(null);
   const [currentView, setCurrentView] = useState<ViewType>("list");
+  const [formMode, setFormMode] = useState<formMode>(null)
 
   useEffect(() => {
     async function getRecipes() {
@@ -38,7 +34,7 @@ function App() {
       },
       body: JSON.stringify({ 
         title: recipe.title,
-        igredients: [],
+        ingredients: recipe.ingredients,
         steps: []
         
        })
@@ -54,10 +50,6 @@ function App() {
   };
   void addRecipe;
 
-
-
-
-
   async function deleteRecipe(id: string) {
     const res = await fetch(`http://localhost:3000/api/recipes/${id}`, {
       method: "DELETE"
@@ -70,11 +62,9 @@ function App() {
     setRecipes(updateRecipes);    
   }
  
-
-
-
-
-
+  function changeFormMode(mode: formMode ) {
+    setFormMode(mode)
+  }
 
 
   //set_views
@@ -109,6 +99,8 @@ function App() {
             selectRecipe={selectRecipe}
             openFormView={openFormView}
             deleteRecipe={deleteRecipe}
+            changeFormMode={changeFormMode}
+            
           />
         )}
 
@@ -117,13 +109,17 @@ function App() {
             selRecipe={selRecipe}
             openListView={openListView}
             openFormView={openFormView}
+            changeFormMode={changeFormMode}
           />
         )}
 
         {currentView === "form" && (
           <RecipeEditorView 
           openListView={openListView}
-          addRecipe={addRecipe}/>
+          addRecipe={addRecipe}
+          selRecipe={selRecipe}
+          formMode={formMode}
+          />
         )}
       </section>
     </main>

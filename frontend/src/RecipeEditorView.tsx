@@ -1,21 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { RecipeFormType } from "./types/recipes";
- 
+import type { formMode, RecipeType } from "./types/recipes";
 
 type RecipeEditorViewProps = {
     openListView: () => void
     addRecipe: (recipe: RecipeFormType) => void
+    selRecipe: RecipeType | null
+    formMode: formMode
 }
+
+
 
 function RecipeEditorView(props: RecipeEditorViewProps) {
 
     const [formData, setFormData] = useState<RecipeFormType>({
+        id: "",
         title: "",
         category: "",
         description: "",
         ingredients: [],
-        step: []
+        steps: []
     })
+
+    const [ingredient, setIngredient] = useState({
+        id: "",
+        name: "",
+        qty: 0,
+        unit: ""
+    })
+
+    useEffect(() => {
+        function setRecipeInForm() {
+            if (!props.selRecipe) return;
+            setFormData({
+                id: props.selRecipe.id,
+                title: props.selRecipe.title,
+                category: props.selRecipe.category,
+                description: props.selRecipe.description,
+                ingredients: [],
+                steps: []
+            })
+        }
+        if (props.formMode === "edit") {
+            setRecipeInForm();
+        }
+    }, [props.selRecipe, props.formMode])
+
 
     return (
         <article className="recipe-details recipe-form-view">
@@ -27,9 +57,9 @@ function RecipeEditorView(props: RecipeEditorViewProps) {
                 <div className="view-actions">
                     <button type="button" onClick={props.openListView}>Cancelar</button>
                     <button type="button"
-                    onClick={() => {
-                        props.addRecipe(formData)
-                    }}>Guardar</button>
+                        onClick={() => {
+                            props.addRecipe(formData)
+                        }}>Guardar</button>
                 </div>
             </header>
 
@@ -69,9 +99,61 @@ function RecipeEditorView(props: RecipeEditorViewProps) {
             <section className="form-card">
                 <h2>Ingredientes</h2>
                 <div className="ingredient-row">
-                    <input type="text" placeholder="Ingrediente" />
-                    <input type="text" placeholder="Cantidad" />
-                    <button type="button">Agregar</button>
+                    <input type="text" placeholder="Ingrediente" className="input-ingredient"
+                        value={ingredient.name}
+                        onChange={(e) => {
+                            setIngredient({
+                                ...ingredient,
+                                name: e.target.value
+                            })
+                        }} />
+                    <input type="number" placeholder="Cantidad" className="input-qty"
+                        value={ingredient.qty}
+                        onChange={(e) => {
+                            setIngredient({
+                                ...ingredient,
+                                qty: Number(e.target.value)
+                            })
+                        }} />
+                    <select name="" id="" className="input-unit"
+                        value={ingredient.unit}
+                        onChange={(e) => {
+                            setIngredient({
+                                ...ingredient,
+                                unit: e.target.value
+                            })
+                        }}>
+                        <option value="" hidden>unidades</option>
+                        <option value="ud">unidad</option>
+                        <option value="g">gramo</option>
+                        <option value="ml">mililitro</option>
+                        <option value="cda">cucharada</option>
+                        <option value="cdta">cucharadita</option>
+                        <option value="kg">kilogramo</option>
+                        <option value="l">litro</option>
+                        <option value="oz">onza</option>
+                        <option value="paq">paquete</option>
+                    </select>
+                    <button type="button"
+                        onClick={() => {
+                            const ingrediientToAdd = {
+                                ...ingredient,
+                                id: crypto.randomUUID()
+                            }
+                            setFormData({
+                                ...formData,
+                                ingredients: [
+                                    ...formData.ingredients,
+                                    ingrediientToAdd
+                                ]
+                            })
+                            setIngredient({
+                                id: "",
+                                name: "",
+                                qty: 0,
+                                unit: "ud"
+                            })
+                        }}>Agregar</button>
                 </div>
             </section>
 
@@ -80,6 +162,7 @@ function RecipeEditorView(props: RecipeEditorViewProps) {
                 <textarea placeholder="Escribe los pasos de preparacion" rows={6}></textarea>
             </section>
         </article>
+
     )
 }
 export default RecipeEditorView;
