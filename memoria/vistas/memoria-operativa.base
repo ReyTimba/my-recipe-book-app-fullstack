@@ -1,0 +1,101 @@
+filters:
+  and:
+    - file.inFolder("operativa")
+    - file.ext == "md"
+properties:
+  id:
+    displayName: ID
+  tipo:
+    displayName: Tipo
+  estado:
+    displayName: Estado
+  ciclo_origen:
+    displayName: Ciclo de origen
+  intentos_origen:
+    displayName: Evidencia de origen
+  decisiones_relacionadas:
+    displayName: Decisiones relacionadas
+  sustituye:
+    displayName: Sustituye
+  actualizado:
+    displayName: Actualizado
+views:
+  - type: table
+    name: Decisiones vigentes
+    filters:
+      and:
+        - tipo == "decision"
+        - estado == "vigente"
+    order:
+      - file.name
+      - ciclo_origen
+      - intentos_origen
+      - sustituye
+      - actualizado
+    sort:
+      - property: actualizado
+        direction: DESC
+  - type: table
+    name: Decisiones no vigentes
+    filters:
+      and:
+        - tipo == "decision"
+        - estado != "vigente"
+    order:
+      - file.name
+      - estado
+      - ciclo_origen
+      - intentos_origen
+      - sustituye
+      - actualizado
+  - type: table
+    name: Conocimiento vigente
+    filters:
+      and:
+        - tipo == "conocimiento"
+        - estado == "vigente"
+    order:
+      - file.name
+      - ciclo_origen
+      - intentos_origen
+      - decisiones_relacionadas
+      - sustituye
+      - actualizado
+    sort:
+      - property: actualizado
+        direction: DESC
+  - type: table
+    name: Conocimiento no vigente
+    filters:
+      and:
+        - tipo == "conocimiento"
+        - estado != "vigente"
+    order:
+      - file.name
+      - estado
+      - ciclo_origen
+      - intentos_origen
+      - decisiones_relacionadas
+      - sustituye
+      - actualizado
+  - type: table
+    name: Trazabilidad
+    filters:
+      or:
+        - tipo == "decision"
+        - tipo == "conocimiento"
+    groupBy:
+      property: ciclo_origen
+      direction: DESC
+    order:
+      - file.name
+      - tipo
+      - estado
+      - ciclo_origen
+      - intentos_origen
+      - decisiones_relacionadas
+      - sustituye
+      - actualizado
+    sort:
+      - property: actualizado
+        direction: DESC

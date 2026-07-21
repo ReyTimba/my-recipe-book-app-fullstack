@@ -1,0 +1,122 @@
+filters:
+  and:
+    - file.inFolder("temporal")
+    - file.ext == "md"
+formulas:
+  ciclo_raiz: if(tipo == "ciclo", file.asLink(), ciclo)
+properties:
+  id:
+    displayName: ID
+  tipo:
+    displayName: Tipo
+  estado:
+    displayName: Estado
+  aceptacion_humana:
+    displayName: Aceptación humana
+  resultado_tecnico:
+    displayName: Resultado técnico
+  numero_intento:
+    displayName: Número de intento
+  intentos:
+    displayName: Intentos
+  consolidado_en:
+    displayName: Consolidado en
+  actualizado:
+    displayName: Actualizado
+  formula.ciclo_raiz:
+    displayName: Ciclo
+views:
+  - type: table
+    name: Activos
+    filters:
+      and:
+        - tipo == "ciclo"
+        - estado != "cerrado"
+    order:
+      - file.name
+      - estado
+      - aceptacion_humana
+      - intentos
+      - actualizado
+    sort:
+      - property: actualizado
+        direction: ASC
+  - type: table
+    name: Pendientes de aceptación
+    filters:
+      and:
+        - tipo == "ciclo"
+        - estado == "ejecutado_pendiente_de_aceptacion"
+    order:
+      - file.name
+      - estado
+      - intentos
+      - actualizado
+  - type: table
+    name: Pendientes de consolidación
+    filters:
+      and:
+        - tipo == "ciclo"
+        - estado == "aprobado_pendiente_de_consolidacion"
+    order:
+      - file.name
+      - aceptacion_humana
+      - intentos
+      - consolidado_en
+      - actualizado
+  - type: table
+    name: Intentos con incidencias
+    filters:
+      and:
+        - tipo == "intento"
+        - or:
+            - resultado_tecnico == "parcial"
+            - resultado_tecnico == "fallido"
+            - resultado_tecnico == "bloqueado"
+    groupBy:
+      property: formula.ciclo_raiz
+      direction: DESC
+    order:
+      - file.name
+      - formula.ciclo_raiz
+      - numero_intento
+      - resultado_tecnico
+      - actualizado
+    sort:
+      - property: numero_intento
+        direction: ASC
+  - type: table
+    name: Cerrados
+    filters:
+      and:
+        - tipo == "ciclo"
+        - estado == "cerrado"
+    order:
+      - file.name
+      - aceptacion_humana
+      - intentos
+      - consolidado_en
+      - actualizado
+    sort:
+      - property: actualizado
+        direction: DESC
+  - type: table
+    name: Trazabilidad
+    filters:
+      or:
+        - tipo == "ciclo"
+        - tipo == "intento"
+    groupBy:
+      property: formula.ciclo_raiz
+      direction: DESC
+    order:
+      - file.name
+      - tipo
+      - formula.ciclo_raiz
+      - estado
+      - numero_intento
+      - resultado_tecnico
+      - actualizado
+    sort:
+      - property: numero_intento
+        direction: ASC
