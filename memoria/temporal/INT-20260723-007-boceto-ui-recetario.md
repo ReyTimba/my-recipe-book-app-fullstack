@@ -137,6 +137,20 @@ La verificación visual queda pendiente (responsable: anfitrión humano):
 - Probar CRUD (añadir, editar, eliminar)
 - Probar búsqueda y favoritos
 
+## Ajustes post-consolidación (2026-07-23)
+
+Ajustes iterativos realizados tras la aceptación inicial, sin nuevo ciclo:
+
+1. **Abecedario lateral**: Cambiado de horizontal a vertical, en barra lateral derecha (2.3rem de ancho).
+2. **Popup centrado**: Ahora aparece centrado en pantalla con efecto vidrio esmerilado (frosted glass: `backdrop-filter: blur(16px)`, fondo semitransparente).
+3. **Popup interactivo**: Al deslizar sobre el abecedario, el usuario puede continuar hasta la lista y seleccionar una receta sin levantar el dedo. La receta se resalta al pasar el dedo.
+4. **Fondo difuminado**: Al mostrar el popup, el área de recetas se difumina (`filter: blur(3px)`).
+5. **Ajustes de ancho**: Abecedario más ancho para mejor navegación táctil. Popup más estrecho para no montarse sobre el abecedario.
+6. **Letras más grandes**: Popup con letra de 1.2rem y encabezado de 3rem.
+7. **Backdrop alfa**: Overlay sobre las targetas de recetas cuando el popup está activo.
+
+Estos cambios quedan registrados en el commit `6e92983`.
+
 ## Relaciones
 
 - Ciclo: CIC-20260723-003

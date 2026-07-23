@@ -41,6 +41,12 @@ Aplicación web React 19 + TypeScript 7 + Vite 8, diseño responsive mobile-firs
 - Las recetas solo tienen un tag (su categoría), perdiendo los tags descriptivos originales.
 - La búsqueda textual sigue funcionando sobre nombre, ingredientes y pasos.
 
+## Ajustes finales
+
+- Abecedario en barra lateral vertical derecha (2.3rem) con letras compactas.
+- Popup centrado con efecto vidrio (frosted glass), interactivo: selección de receta sin levantar el dedo.
+- Fondo de recetas se difumina al mostrar el popup.
+
 ## Trazabilidad
 
 - Ciclo: CIC-20260723-003
