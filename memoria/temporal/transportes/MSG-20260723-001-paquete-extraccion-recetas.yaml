@@ -1,0 +1,64 @@
+version_protocolo: "sor-transporte/1"
+id_mensaje: "MSG-20260723-001-paquete-extraccion-recetas"
+tipo_mensaje: "paquete_de_intento"
+modo_transporte: "manual"
+proyecto: "PRO-20260721-001"
+ciclo: "CIC-20260721-001"
+intento: "INT-20260723-002"
+autor_contenido: "Supervisor"
+instancia_origen: "sor-supervisor:/root/preparar_extraccion_recetas"
+destino: "Ejecutor"
+transportado_por: "Humano"
+creado: "2026-07-23T01:54:45+02:00"
+mensaje_anterior: null
+autorizacion_humana: "Otorgada únicamente para ejecutar este paquete exacto: leer el ZIP y sus imágenes, crear recetas_extraidas.md y escribir la memoria temporal SOR necesaria; sin modificar código ni originales."
+contenido:
+  peticion_original: >-
+    Leer G:/Mi unidad/0000 Programacion_estudio/Imgs_Recetas_Teca.zip,
+    extraer todas las recetas visibles en sus imágenes mediante OCR/inspección
+    y crear C:/Users/Reynel/Desktop/sor-proyectos/recetario/recetas_extraidas.md.
+    Solo lectura del ZIP/imágenes; escritura del Markdown y memoria temporal
+    SOR necesaria; no cambiar código, no borrar ni modificar originales.
+  objetivo_del_intento: >-
+    Producir un Markdown legible y trazable que transcriba todas las recetas
+    visibles en las 48 imágenes JPEG del ZIP, corrigiendo el OCR mediante
+    inspección visual y dejando cada imagen contabilizada.
+  alcance_y_limites:
+    obligatorias:
+      - 'Raíz lógica: "."; resolución local: C:/Users/Reynel/Desktop/sor-proyectos/recetario.'
+      - 'Bóveda lógica: memoria.'
+      - 'Continuar CIC-20260721-001 como intento 2, relacionado con INT-20260721-001; mantener pendiente la aceptación humana.'
+      - 'Fuente externa de solo lectura: proyecto Recetario; identificador Imgs_Recetas_Teca.zip; ruta observada G:/Mi unidad/0000 Programacion_estudio/Imgs_Recetas_Teca.zip; estado verificado el 2026-07-23; SHA-256 esperado 0CCF01DCB5B75AB8CDC6973D4C4171429E557A56717234B7B366BDA35FD7573A; atribución: fuente indicada por el humano.'
+      - 'La fuente contiene 48 miembros JPEG bajo Imgs_Recetas_Teca/.'
+      - 'Únicas escrituras autorizadas: recetas_extraidas.md y memoria temporal SOR estrictamente necesaria para registrar intento y evidencia.'
+      - 'No modificar ni borrar el ZIP o sus imágenes; no cambiar código, configuración, dependencias, memoria operativa, .git ni otros archivos.'
+      - 'No instalar software, usar servicios externos, red, IA remota ni crear copias persistentes de las imágenes.'
+      - 'No aceptar, consolidar, cerrar ni hacer commit.'
+      - 'Si recetas_extraidas.md existe al comenzar, la huella del ZIP difiere, no pueden leerse todas las imágenes sin escrituras adicionales, o una ambigüedad impide una transcripción responsable, detenerse sin sobrescribir ni inventar.'
+      - 'Para texto incierto usar [ilegible] o indicar la duda y la imagen fuente; no completar ingredientes, cantidades o pasos por inferencia.'
+    recomendadas:
+      - 'Preservar idioma, unidades y orden visibles; unir páginas solo cuando la continuidad sea clara y evitar duplicados únicamente cuando la evidencia sea inequívoca.'
+    superficie_de_inspeccion:
+      requerida: "Visor/OCR capaz de leer los JPEG del ZIP a resolución completa y con zoom, sin alterar los originales."
+      prueba_previa_sin_cambios_productivos: "Abrir en solo lectura una imagen, confirmar legibilidad y que OCR/inspección funcionan antes de crear recetas_extraidas.md."
+      responsable_interaccion: "Ejecutor; no se presupone intervención humana ni control de una sesión secundaria."
+      condicion_de_salida: "Las 48 imágenes quedan revisadas y contabilizadas, o se activa una condición de parada."
+    vivacidad: "Primera señal antes de 60 s; un sondeo tras 60 s sin progreso; interrupción tras otros 60 s; una sola recuperación después de reconstruir la bóveda."
+  cambios_solicitados:
+    - "Crear recetas_extraidas.md."
+    - "Usar un título general y una sección por receta con nombre, ingredientes, preparación y cualquier dato adicional realmente visible."
+    - "Indicar para cada receta las imágenes fuente por su nombre de archivo."
+    - "Añadir una sección final de cobertura que contabilice los 48 JPEG y señale continuaciones, duplicados claros, imágenes sin receta o contenido ilegible."
+    - "Registrar en memoria temporal SOR las acciones, archivos afectados, incidencias y evidencias del intento 2; enlazarlo al ciclo sin cerrar ni consolidar."
+  comprobacion_tecnica_esperada:
+    obligatorias:
+      - "Verificar antes y después que el SHA-256 del ZIP sea exactamente 0CCF01DCB5B75AB8CDC6973D4C4171429E557A56717234B7B366BDA35FD7573A."
+      - "Confirmar que las 48 imágenes aparecen una vez en la cobertura y que cada receta enlaza su evidencia visual."
+      - "Revisar visualmente cada imagen después del OCR, especialmente cantidades, unidades, temperaturas, tiempos y numeración de pasos."
+      - "Comprobar que recetas_extraidas.md abre como Markdown, no está vacío y no contiene texto presentado como cierto cuando era ilegible."
+      - "Comprobar mediante estado/diff que fuera de recetas_extraidas.md y memoria temporal SOR no hubo escrituras."
+      - "Calcular SHA-256 de recetas_extraidas.md y citar su ruta y huella en un resultado breve."
+      - "Informar resultado técnico, número de recetas, 48/48 imágenes contabilizadas, dudas pendientes y rutas de evidencia; métricas no observadas deben ser null con procedencia."
+    recomendadas:
+      - "Buscar marcadores [ilegible] y resumirlos para facilitar la revisión humana."
+huella_contenido: null

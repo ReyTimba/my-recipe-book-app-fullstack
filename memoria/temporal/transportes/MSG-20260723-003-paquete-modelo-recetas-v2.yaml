@@ -1,0 +1,86 @@
+version_protocolo: "sor-transporte/1"
+id_mensaje: "MSG-20260723-003-paquete-modelo-recetas-v2"
+tipo_mensaje: "paquete_de_intento"
+modo_transporte: "manual"
+proyecto: "PRO-20260721-001"
+ciclo: "CIC-20260721-001"
+intento: "INT-20260723-003"
+autor_contenido: "Supervisor"
+instancia_origen: "sor-supervisor:/root/preparar_extraccion_recetas"
+destino: "Ejecutor"
+transportado_por: "Humano"
+creado: "2026-07-23T02:22:12+02:00"
+mensaje_anterior: "MSG-20260723-002-informe-supervision-extraccion"
+autorizacion_humana: >-
+  Otorgada únicamente para ejecutar este paquete exacto: diseñar e implementar
+  un modelo de dominio evolutivo y persistencia compatible/migrable, adaptar
+  formularios y vistas solo en lo necesario, añadir pruebas representativas y
+  documentar el modelo. No autoriza cargar las 55 recetas, rediseñar la interfaz,
+  consolidar, cerrar ni hacer commit.
+contenido:
+  peticion_original: >-
+    Quiero que con estas recetas construyamos el modelo necesario para poderlas representar en el recetario.
+  objetivo_del_intento: >-
+    Evolucionar Recipe y la persistencia desde el esquema rígido v1 hacia un esquema v2 reversible y extensible que pueda representar fielmente los casos observados en recetas_extraidas.md, sin perder compatibilidad con datos y copias de seguridad v1 ni alterar el comportamiento esencial del MVP.
+  alcance_y_limites:
+    identidad_y_estado:
+      - 'Raíz lógica: "."; resolución local observada: C:/Users/Reynel/Desktop/sor-proyectos/recetario.'
+      - 'Bóveda lógica: memoria; proyecto PRO-20260721-001; ciclo CIC-20260721-001; crear intento 3 relacionado con INT-20260723-002 y mantener aceptación pendiente.'
+      - 'Modelo actual: Recipe v1 rígido; almacenamiento/backups schemaVersion 1.'
+      - 'Fuente protegida recetas_extraidas.md: 55 preparaciones; SHA-256 F25FF7F44FDD5786138864C9B473FDD19E3C35A99AC2D2E79D8F899D4A2F80CA.'
+      - 'Línea base recipe.ts C8F0E85FC7A459AE71A71372A08D2F7E7CAC278CFE1D7207B2F16599717D61D3; storage 4660D6943C8F24016BA09B760AD20005C951A44FDCF3BB120C03E700FA5D5DB5.'
+    obligatorias:
+      - 'Inspeccionar las 55 preparaciones y clasificar casos antes de diseñar.'
+      - 'Representar ausencia, incompletitud, incertidumbre y aproximación explícitamente, nunca como cero, vacío o certeza inventada.'
+      - 'Conservar texto original sin pérdida para cantidades, rangos, proporciones, unidades, rendimientos, tiempos y temperaturas.'
+      - 'Permitir preparaciones simples/compuestas, secciones o subrecetas ordenadas y referencias estables sin usar nombres como identidad.'
+      - 'Permitir rendimientos por porciones, unidades, peso, volumen, lote, texto libre o desconocido.'
+      - 'Ingredientes con cantidad exacta, rango, aproximada, proporcional, al gusto o desconocida.'
+      - 'Preparación ausente/incompleta y pasos con tiempo, temperatura, equipo y notas opcionales.'
+      - 'Fuentes, conservación, procedencia/incertidumbre opcionales.'
+      - 'Preservar id, nombre, descripción, etiquetas, favorito y fechas v1.'
+      - 'Migración v1→v2 determinista, idempotente, comprobable y no destructiva; un fallo no sobrescribe datos válidos.'
+      - 'Importar backups v1/v2, exportar v2, rechazar inválidos/desconocidos sin mutación parcial.'
+      - 'Editar desde formulario una receta v2 no borra campos avanzados no expuestos.'
+      - 'Mantener listado, detalle, búsqueda, filtros, favoritos, CRUD e import/export.'
+      - 'Registrar sobre y evidencia en memoria temporal, enlazar intento sin cambiar aceptación.'
+    rutas_autorizadas:
+      - 'src/domain/**; src/storage/**; src/components/recipe-form.tsx; src/components/recipe-detail.tsx; src/components/recipe-card.tsx; src/domain/search.ts; src/App.tsx; src/styles.css solo ajustes mínimos; tests/**; README.md; docs/**; memoria/temporal/** necesaria.'
+    rutas_y_acciones_protegidas:
+      - 'No modificar recetas_extraidas.md ni fuentes; no cargar las 55 recetas; no rediseñar UI/editor avanzado; no cambiar dependencias/package files; no red/servicios/backend; no revertir cambios previos; no memoria operativa, aceptar, consolidar, cerrar, publicar ni commit.'
+    condiciones_de_parada:
+      - 'Parar si fuentes/líneas base difieren sin atribución segura; migración puede destruir único v1; subrecetas exige decisión irreversible de propiedad/sincronización; ontología cerrada descarta texto; compatibilidad exige ampliar producto/dependencias/rediseño/poblado; o datos v1 reales obligan a inventar.'
+    inspeccion_requerida:
+      estatica:
+        - 'Leer MD completa y matriz de casos; inspeccionar dominio, parsers, storage, backups, formulario, detalle, tarjeta, búsqueda y pruebas; ejecutar test/typecheck/build de línea base.'
+      superficie_interactiva:
+        requerida: 'Navegador local aislado con localStorage sintético.'
+        prueba_previa_sin_cambios_productivos: 'Antes de editar, comprobar listar/abrir/crear/editar ejemplos y control de sesión.'
+        responsable_interaccion: 'Ejecutor.'
+        condicion_de_salida: 'Tras implementar, repetir con receta v1 migrada y fixture v2; conservar comportamiento/datos o declarar parcial si ampliar alcance.'
+    vivacidad: 'Primera señal antes de 60 s; sondeo tras 60; interrupción tras otros 60; una recuperación.'
+  cambios_solicitados:
+    - 'Crear matriz para simple, compuesta, subreceta, lote/rendimiento, cantidad aproximada/rango/desconocida, pasos ausentes/incompletos, tiempo/temperatura/equipo, conservación, fuentes e incertidumbre.'
+    - 'Documentar esquema v2, invariantes, optionalidad, relaciones, ejemplos, límites y evolución.'
+    - 'Implementar tipos, creación, normalización, validación, parsing y copias defensivas v2.'
+    - 'Migración segura v1 y backups v1; validación total antes de guardar.'
+    - 'Adaptar búsqueda/CRUD preservando identidad, orden, referencias y avanzados.'
+    - 'Adaptar UI mínimamente para compilar, conservar flujos y no perder datos; mostrar lo imprescindible.'
+    - 'Fixtures solo en pruebas inspiradas en fuente, no producción.'
+    - 'Actualizar documentación de storage, backup, migración y edición.'
+    - 'Registrar INT-20260723-003 y enlazar ciclo.'
+  comprobacion_tecnica_esperada:
+    obligatorias:
+      - 'Línea base y final npm test, npm run typecheck y npm run build, distinguiendo fallos previos.'
+      - 'Migración v1→v2 conserva ids/texto/ingredientes/pasos/porciones/tiempos/tags/favorito/fechas; doble migración mismo resultado semántico y origen recuperable.'
+      - 'Backup v1 importa; v2 round-trip; versiones desconocidas/inválidos rechazados sin reemplazo parcial.'
+      - 'Fixtures cubren matriz completa.'
+      - 'Validar referencias duplicadas, ciclos o destinos ausentes según política documentada, sin nombres ni pérdida de texto.'
+      - 'Guardar/editar UI receta avanzada no elimina no editables.'
+      - 'Búsqueda/filtros/favoritos/creación/edición/eliminación/persistencia v1 siguen.'
+      - 'Recorrido final sin consola y distingue ausente de cero.'
+      - 'recetas_extraidas.md conserva SHA indicada; diff limitado; no 55 recetas en producción.'
+      - 'Entregar estado, rutas, pruebas, migración, riesgos, pendientes y SHA de evidencia; métricas no aportadas null.'
+    recomendadas:
+      - 'Migración/parsing puras; nombres comprensibles; evitar blobs genéricos; pruebas de serialización y no mutación.'
+huella_contenido: null

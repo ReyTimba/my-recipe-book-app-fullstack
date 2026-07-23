@@ -1,0 +1,100 @@
+id: MSG-20260723-006
+tipo: paquete_intento
+proyecto: PRO-20260721-001-recetario
+ciclo_nuevo: CIC-20260723-002
+intento: INT-20260723-006
+creado: "2026-07-23"
+raiz_proyecto: "."
+ruta_boveda: "memoria"
+--- # cinco campos obligatorios
+peticion_original: >
+  Rediseñar la UI del recetario para una app de restaurante: estilo oscuro,
+  moderno, premium, tipo libro de cocina, adaptado a móvil y tablet.
+  Incluir sistema de placeholders IMG-XXX para imágenes generadas después.
+objetivo_del_intento: >
+  Construir una pantalla principal completa con interfaz oscura moderna,
+  reemplazando el CSS, los componentes y App.tsx para mobile-first.
+  Incluir: encabezado con saludo, buscador, categorías, tarjeta destacada,
+  sección de tendencias, navegación inferior, y sistema de placeholders
+  de imagen con identificadores IMG-XXX visibles en la interfaz.
+alcance_y_limites:
+  proyecto: recetario (PRO-20260721-001)
+  raiz_logica: "."
+  boveda: "memoria"
+  ciclo: CIC-20260723-002 (nuevo)
+  intento_anterior: INT-20260723-005
+  rutas_autorizadas:
+    - src/App.tsx
+    - src/styles.css
+    - src/components/*.tsx
+    - src/components/ImagePlaceholder.tsx (nuevo)
+    - src/components/RecipeCard.tsx (nuevo diseño)
+    - src/components/CategoryCard.tsx (nuevo)
+    - src/components/SearchBar.tsx (nuevo)
+    - src/components/BottomNavigation.tsx (nuevo)
+    - src/components/FeaturedRecipe.tsx (nuevo)
+    - src/components/RecipeDetail.tsx (rediseño)
+    - src/components/RecipeForm.tsx (rediseño)
+    - src/components/ConfirmDialog.tsx (rediseño)
+    - src/components/BackupActions.tsx (rediseño)
+    - src/domain/image-slots.ts (nuevo)
+    - memoria/temporal/** (solo este ciclo)
+  rutas_protegidas:
+    - src/domain/recipe.ts
+    - src/domain/recetas-cargadas.ts
+    - src/domain/search.ts
+    - src/storage/**
+    - tests/**
+    - docs/**
+    - recetas_extraidas.md
+    - .git/**
+  decisiones_humanas_aplicables:
+    - DEC-20260723-001: aceptación del MVP
+  riesgos_conocidos:
+    - Cambio masivo de CSS puede romper vistas detalle/formulario
+    - RecipeDetail y RecipeForm deben adaptarse al nuevo tema oscuro
+    - Los tests existentes no deben romperse (dominio y storage intactos)
+    - La app debe seguir siendo funcional (CRUD, búsqueda, persistencia)
+  condiciones_de_parada:
+    - npm run typecheck falla
+    - npm run build falla
+    - Algún IMG-XXX no es visible en la interfaz
+    - La app deja de cargar recetas o perder funcionalidad existente
+  acciones_prohibidas:
+    - Modificar src/domain/recipe.ts
+    - Modificar src/domain/recetas-cargadas.ts
+    - Modificar src/domain/search.ts
+    - Modificar src/storage/**
+    - Modificar tests/**
+    - Generar, descargar o incrustar imágenes reales
+    - Usar URLs externas para imágenes
+    - Consolidar o cerrar el ciclo
+cambios_solicitados:
+  - Crear src/domain/image-slots.ts con la estructura centralizada de IMG-XXX
+  - Crear src/components/ImagePlaceholder.tsx (marcador provisional visible)
+  - Crear src/components/CategoryCard.tsx (tarjetas de categoría)
+  - Crear src/components/SearchBar.tsx (buscador con lupa y filtros)
+  - Crear src/components/BottomNavigation.tsx (nav inferior con botón central destacado)
+  - Crear src/components/FeaturedRecipe.tsx (tarjeta destacada principal)
+  - Rediseñar src/components/RecipeCard.tsx (estilo oscuro compacto)
+  - Rediseñar src/styles.css (tema oscuro completo, mobile-first)
+  - Rediseñar src/App.tsx (nueva estructura con bottom nav, categorías, etc.)
+  - Rediseñar src/components/RecipeDetail.tsx (adaptar al tema oscuro)
+  - Rediseñar src/components/RecipeForm.tsx (adaptar al tema oscuro)
+  - Rediseñar src/components/ConfirmDialog.tsx (adaptar al tema oscuro)
+  - Rediseñar src/components/BackupActions.tsx (adaptar al tema oscuro)
+comprobacion_tecnica_esperada:
+  obligatorias:
+    - npm test (33/33 passes)
+    - npm run typecheck (sin errores)
+    - npm run build (build exitoso)
+    - Cada IMG-XXX visible en pantalla con su identificador
+    - La app carga recetas correctamente
+    - Búsqueda y filtros funcionales
+    - Navegación inferior funcional
+    - Favoritos funcionales
+  recomendadas:
+    - Vista detalle de receta con tema oscuro
+    - Formulario de receta con tema oscuro
+    - Importación/exportación funcional
+    - Navegación entre vistas

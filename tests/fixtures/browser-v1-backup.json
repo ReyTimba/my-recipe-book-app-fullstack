@@ -1,0 +1,24 @@
+{
+  "application": "recetario",
+  "schemaVersion": 1,
+  "exportedAt": "2026-07-23T00:00:00.000Z",
+  "recipes": [
+    {
+      "id": "browser-v1-sopa",
+      "name": "Fixture v1 — sopa",
+      "description": "Dato aislado para probar migración",
+      "servings": 4,
+      "prepMinutes": 0,
+      "cookMinutes": 35,
+      "ingredients": [
+        { "id": "browser-v1-agua", "amount": "1–2", "unit": "L", "name": "Agua" },
+        { "id": "browser-v1-sal", "amount": "", "unit": "", "name": "Sal" }
+      ],
+      "steps": ["Mezclar sin cambiar este texto.", "Cocer."],
+      "tags": ["Prueba", "Migración"],
+      "favorite": true,
+      "createdAt": "2026-01-02T10:00:00.000Z",
+      "updatedAt": "2026-01-03T10:00:00.000Z"
+    }
+  ]
+}

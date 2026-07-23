@@ -1,0 +1,179 @@
+version_protocolo: "sor-transporte/1"
+id_mensaje: "MSG-20260723-004-paquete-recuperacion-modelo-recetas-v2"
+tipo_mensaje: "paquete_de_intento"
+modo_transporte: "manual"
+proyecto: "PRO-20260721-001"
+ciclo: "CIC-20260721-001"
+intento: "INT-20260723-004"
+autor_contenido: "Supervisor"
+instancia_origen: "sor-supervisor:/root/preparar_extraccion_recetas"
+destino: "Ejecutor"
+transportado_por: "Humano"
+creado: "2026-07-23T02:30:19+02:00"
+mensaje_anterior: "MSG-20260723-003-paquete-modelo-recetas-v2"
+autorizacion_humana: >-
+  Otorgada únicamente para recuperar y ejecutar el objetivo exacto de
+  MSG-20260723-003: diseñar e implementar un modelo de dominio evolutivo y
+  persistencia compatible/migrable, adaptar formularios y vistas solo en lo
+  necesario, añadir pruebas representativas y documentar el modelo. No autoriza
+  cargar las 55 recetas, rediseñar la interfaz, ampliar alcance, consolidar,
+  cerrar ni hacer commit.
+contenido:
+  peticion_original: >-
+    Quiero que con estas recetas construyamos el modelo necesario para poderlas
+    representar en el recetario.
+  objetivo_del_intento: >-
+    Recuperar el trabajo detenido en INT-20260723-003 y evolucionar Recipe y la
+    persistencia desde el esquema rígido v1 hacia un esquema v2 reversible y
+    extensible que represente fielmente los casos observados en
+    recetas_extraidas.md, sin perder compatibilidad con datos y backups v1 ni
+    alterar el comportamiento esencial del MVP. La implementación y las pruebas
+    estáticas corresponden al Ejecutor; las comprobaciones interactivas previa y
+    final corresponden al anfitrión.
+  alcance_y_limites:
+    identidad_y_estado:
+      - 'Raíz lógica: "."; resolución local observada: C:/Users/Reynel/Desktop/sor-proyectos/recetario.'
+      - 'Bóveda lógica: memoria; proyecto PRO-20260721-001; único ciclo abierto CIC-20260721-001.'
+      - 'Crear INT-20260723-004 como intento 4, relacionado directamente con INT-20260723-003; conservar aceptación pendiente.'
+      - 'INT-20260723-003 quedó bloqueado antes de cambios materiales por ausencia de navegador en el Ejecutor; solo añadió memoria temporal y el sobre MSG-20260723-003.'
+      - 'Modelo actual verificado sin cambios: Recipe v1 rígido; almacenamiento y backups schemaVersion 1.'
+      - 'Fuente protegida recetas_extraidas.md: 55 preparaciones; SHA-256 actual F25FF7F44FDD5786138864C9B473FDD19E3C35A99AC2D2E79D8F899D4A2F80CA.'
+      - 'Línea base src/domain/recipe.ts: C8F0E85FC7A459AE71A71372A08D2F7E7CAC278CFE1D7207B2F16599717D61D3.'
+      - 'Línea base src/storage/recipe-storage.ts: 4660D6943C8F24016BA09B760AD20005C951A44FDCF3BB120C03E700FA5D5DB5.'
+      - 'Servidor del anfitrión observado en http://127.0.0.1:4174 con HTTP 200; su continuidad es estado mutable y no es precondición para las tareas estáticas.'
+    evidencia_interactiva_previa_atribuida:
+      productor: "Anfitrión, mediante navegador integrado y el skill obligatorio de control del navegador."
+      superficie: "http://127.0.0.1:4174, origen y almacenamiento aislados."
+      observaciones:
+        - "Sesión visible y controlable."
+        - "La aplicación mostró dos recetas de ejemplo."
+        - "Se abrió Tortilla de patatas."
+        - "Se creó la receta sintética «Prueba aislada del modelo» con ingrediente Agua y paso Mezclar."
+        - "Se editó la receta añadiendo una descripción y se observó la confirmación."
+        - "Consola observada con 0 warnings y 0 errors."
+      efecto: >-
+        Esta evidencia satisface la prueba interactiva previa de MSG-20260723-003.
+        El Ejecutor no debe repetirla ni bloquearse por carecer de navegador.
+    obligatorias:
+      - "Inspeccionar las 55 preparaciones y clasificar sus casos antes de fijar el esquema."
+      - "Representar ausencia, incompletitud, incertidumbre y aproximación explícitamente; nunca como cero, vacío o certeza inventada."
+      - "Conservar texto original sin pérdida para cantidades, rangos, proporciones, unidades, rendimientos, tiempos y temperaturas."
+      - "Permitir preparaciones simples y compuestas, secciones o subrecetas ordenadas y referencias estables sin usar nombres como identidad."
+      - "Permitir rendimientos por porciones, unidades, peso, volumen, lote, texto libre o desconocido."
+      - "Permitir ingredientes con cantidad exacta, rango, aproximada, proporcional, al gusto o desconocida."
+      - "Permitir preparación ausente o incompleta y pasos con tiempo, temperatura, equipo y notas opcionales."
+      - "Permitir fuentes, conservación, procedencia e incertidumbre opcionales."
+      - "Preservar id, nombre, descripción, etiquetas, favorito y fechas de recetas v1."
+      - "La migración v1→v2 debe ser determinista, idempotente, comprobable y no destructiva; un fallo no puede sobrescribir datos válidos."
+      - "Importar backups v1 y v2, exportar v2 y rechazar versiones desconocidas o datos inválidos sin mutación parcial."
+      - "Editar desde el formulario una receta v2 no puede borrar silenciosamente campos avanzados no expuestos."
+      - "Mantener listado, detalle, búsqueda, filtros, favoritos, CRUD e importación/exportación existentes."
+      - "El Ejecutor realizará implementación, pruebas estáticas y preparación de fixtures/instrucciones; el anfitrión realizará la prueba interactiva final."
+      - "La falta de navegador propio del Ejecutor no es condición de bloqueo ni autoriza omitir la prueba final."
+      - "Al terminar las comprobaciones estáticas, el Ejecutor debe solicitar al anfitrión la prueba interactiva final y esperar su evidencia antes de declarar el intento comprobado."
+      - "Registrar sobre, acciones y evidencia en memoria temporal; enlazar el intento al ciclo sin cambiar aceptación."
+    rutas_autorizadas:
+      - "src/domain/**"
+      - "src/storage/**"
+      - "src/components/recipe-form.tsx"
+      - "src/components/recipe-detail.tsx"
+      - "src/components/recipe-card.tsx"
+      - "src/domain/search.ts"
+      - "src/App.tsx"
+      - "src/styles.css, solo para ajustes mínimos derivados del modelo"
+      - "tests/**, incluidas fixtures sintéticas de v1 y v2"
+      - "README.md y documentación nueva bajo docs/**"
+      - "memoria/temporal/** estrictamente necesaria para transporte, intento y ciclo"
+    rutas_y_acciones_protegidas:
+      - "No modificar recetas_extraidas.md ni sus fuentes."
+      - "No cargar automática ni manualmente las 55 recetas en datos iniciales, localStorage, fixtures de producción o UI."
+      - "No rediseñar la interfaz ni construir un editor avanzado completo."
+      - "No cambiar dependencias, package.json o package-lock.json sin nueva autorización."
+      - "No usar red, servicios externos, backend, nube ni IA remota."
+      - "No detener, reemplazar ni reclamar control del servidor o navegador mantenidos por el anfitrión."
+      - "No revertir ni sobrescribir cambios previos del worktree; registrar línea base antes de editar."
+      - "No modificar memoria operativa, aceptar, consolidar, cerrar, publicar ni hacer commit."
+    condiciones_de_parada:
+      - "Detenerse si fuentes o líneas base difieren sin atribución segura."
+      - "Detenerse si la migración puede destruir o sobrescribir el único estado v1 sin recuperación verificada."
+      - "Detenerse si las subrecetas exigen una decisión irreversible de propiedad, duplicación o sincronización no autorizada."
+      - "Detenerse si una ontología cerrada de unidades, equipos o técnicas descartaría texto original."
+      - "Detenerse si la compatibilidad exige ampliar producto, cambiar dependencias, rediseñar UI o poblar las 55 recetas."
+      - "Detenerse si datos v1 reales no pueden migrarse sin inventar información."
+      - "No detenerse por carecer de navegador: completar trabajo estático, entregar fixture e instrucciones y solicitar evidencia al anfitrión."
+      - "Si la prueba final del anfitrión falla, registrar resultado parcial o preparar corrección dentro del mismo intento; no cerrar por inferencia."
+    inspeccion_requerida:
+      estatica_del_ejecutor:
+        - "Leer recetas_extraidas.md completa y producir una matriz breve de casos representativos antes de elegir el esquema."
+        - "Inspeccionar Recipe, parsers, almacenamiento, backups, formulario, detalle, tarjeta, búsqueda y pruebas."
+        - "Confirmar las huellas de línea base."
+        - "Ejecutar npm test, npm run typecheck y npm run build antes de editar; atribuir fallos previos."
+      interactiva_previa:
+        responsable_interaccion: "Anfitrión."
+        estado: "Satisfecha mediante la evidencia atribuida incluida en este paquete."
+        superficie: "Navegador integrado sobre http://127.0.0.1:4174 con origen aislado."
+        condicion_de_salida: "Ya cumplida: sesión controlable, CRUD sintético observado y consola limpia."
+      interactiva_final:
+        responsable_preparacion: "Ejecutor."
+        responsable_interaccion: "Anfitrión mediante navegador integrado y skill obligatorio."
+        prueba_previa_sin_cambios_productivos: >-
+          El anfitrión confirmará que el servidor y el origen aislado siguen
+          disponibles antes de cargar fixtures. Si cambia la superficie,
+          reconstruirá un origen aislado sin usar datos personales.
+        entrega_del_ejecutor: >-
+          Proporcionar una fixture v1, una fixture v2 representativa, instrucciones
+          literales y resultados esperados para migración, apertura, edición sin
+          pérdida, búsqueda, favorito, exportación y revisión de consola.
+        solicitud_y_espera: >-
+          Tras aprobar pruebas estáticas, pedir explícitamente al anfitrión la
+          ejecución. Mantener el intento pendiente de evidencia; no marcarlo
+          bloqueado por falta de navegador propio ni comprobado antes de recibirla.
+        condicion_de_salida: >-
+          Evidencia atribuida del anfitrión confirma que una receta v1 migra, una
+          fixture v2 avanzada se representa, editar un campo básico conserva los
+          campos avanzados, búsqueda/favorito/exportación funcionan y la consola
+          no presenta warnings ni errors; o documenta un fallo concreto para
+          corrección.
+    vivacidad: >-
+      Primera señal antes de 60 segundos; un sondeo tras 60 segundos sin progreso;
+      interrupción tras otros 60; una sola recuperación después de reconstruir la
+      bóveda. Una solicitud explícita de prueba al anfitrión debe indicar el estado
+      pendiente y la evidencia exacta esperada.
+  cambios_solicitados:
+    - "Crear una matriz para preparación simple, compuesta, subreceta, lote/rendimiento, cantidad aproximada/rango/desconocida, pasos ausentes/incompletos, tiempo/temperatura/equipo, conservación, fuentes e incertidumbre."
+    - "Documentar esquema v2, invariantes, optionalidad, relaciones, ejemplos, límites y evolución."
+    - "Implementar tipos, creación, normalización, validación, parsing y copias defensivas v2."
+    - "Implementar migración segura v1→v2 y compatibilidad de backups v1; validar completamente antes de guardar."
+    - "Adaptar búsqueda y CRUD preservando identidad, orden, referencias y campos avanzados."
+    - "Adaptar UI mínimamente para compilar, conservar flujos y evitar pérdida de datos; mostrar solo lo imprescindible."
+    - "Crear fixtures exclusivamente de prueba inspiradas en la fuente, nunca datos de producción."
+    - "Actualizar documentación de almacenamiento, backups, migración y límites de edición."
+    - "Preparar instrucciones verificables para la prueba interactiva final del anfitrión."
+    - "Registrar INT-20260723-004, relacionarlo con INT-20260723-003 y enlazarlo al ciclo."
+  comprobacion_tecnica_esperada:
+    obligatorias_del_ejecutor:
+      - "Línea base y resultado final aprueban npm test, npm run typecheck y npm run build, distinguiendo fallos preexistentes."
+      - "Migración v1→v2 conserva ids, texto, ingredientes, pasos, porciones, tiempos, etiquetas, favorito y fechas."
+      - "Migrar dos veces produce el mismo resultado semántico y mantiene un origen recuperable."
+      - "Backup v1 válido se importa; backup v2 realiza round-trip; versiones desconocidas e inválidos se rechazan sin reemplazo parcial."
+      - "Fixtures cubren toda la matriz de representación."
+      - "Referencias duplicadas, ciclos o destinos ausentes siguen la política documentada, sin resolverse por nombre ni perder texto."
+      - "Pruebas demuestran que guardar o editar una receta avanzada no elimina campos no editables."
+      - "Búsqueda, filtros, favoritos, creación, edición, eliminación y persistencia v1 continúan funcionando."
+      - "recetas_extraidas.md conserva SHA-256 F25FF7F44FDD5786138864C9B473FDD19E3C35A99AC2D2E79D8F899D4A2F80CA."
+      - "El diff se limita a rutas autorizadas, preserva cambios previos y no introduce las 55 recetas en producción."
+      - "Entregar al anfitrión fixtures, pasos literales y resultados esperados para la comprobación interactiva final."
+    obligatorias_del_anfitrion:
+      - "Verificar en navegador una receta v1 migrada y una fixture v2 representativa."
+      - "Editar un campo básico de la fixture avanzada y comprobar que exportarla conserva sus campos no editables."
+      - "Comprobar búsqueda, favorito y ausencia de warnings/errors de consola."
+      - "Devolver evidencia atribuida al intento 4 para que el Ejecutor finalice su informe."
+    cierre_del_resultado:
+      - "El Ejecutor no declarará el intento comprobado hasta incorporar la evidencia final del anfitrión."
+      - "El resultado debe informar estado, rutas, pruebas, migración, evidencia interactiva, riesgos, pendientes y SHA-256 de la evidencia temporal canónica."
+      - "Métricas no aportadas por el anfitrión se registran como null con procedencia, sin estimarlas."
+    recomendadas:
+      - "Mantener migración y parsing como funciones puras."
+      - "Usar nombres de dominio comprensibles y evitar blobs genéricos."
+      - "Añadir pruebas de serialización estable y ausencia de mutación accidental."
+huella_contenido: null

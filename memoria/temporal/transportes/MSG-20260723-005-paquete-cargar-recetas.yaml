@@ -1,0 +1,121 @@
+version_protocolo: "sor-transporte/1"
+id_mensaje: "MSG-20260723-005-paquete-cargar-recetas"
+tipo_mensaje: "paquete_de_intento"
+modo_transporte: "manual"
+proyecto: "PRO-20260721-001"
+ciclo: "CIC-20260721-001"
+intento: "INT-20260723-005"
+autor_contenido: "Supervisor"
+instancia_origen: "sor-supervisor:/preparar/cargar-55-recetas"
+destino: "Ejecutor"
+transportado_por: "Humano"
+creado: "2026-07-23T23:00:00+02:00"
+mensaje_anterior: "MSG-20260723-004-paquete-recuperacion-modelo-recetas-v2"
+autorizacion_humana: >-
+  Autorizada por el humano el 2026-07-23 para ejecutar el objetivo exacto del
+  paquete: cargar las 55 recetas de recetas_extraidas.md en el recetario
+  conforme al alcance, límites y comprobaciones detallados. No autoriza
+  consolidar, cerrar ni hacer commit.
+contenido:
+  peticion_original: "cargar las 55 recetas en el recetario"
+
+  objetivo_del_intento: >-
+    Convertir las 55 recetas/preparaciones documentadas en recetas_extraidas.md
+    al modelo Recipe v2 e integrarlas como datos precargados en la aplicación,
+    de modo que al abrir el recetario por primera vez (o al resetear) aparezcan
+    esas recetas en lugar de los datos de ejemplo actuales.
+
+  alcance_y_limites:
+    identidad_y_estado:
+      - 'Proyecto: PRO-20260721-001 Recetario.'
+      - 'Raíz lógica: "."; resolución local observada: C:/Users/Reynel/Desktop/sor-proyectos/recetario.'
+      - 'Bóveda lógica: "memoria".'
+      - 'Ciclo: CIC-20260721-001 — estado "ejecutado_aceptado", aceptación humana registrada en DEC-20260723-001.'
+      - 'Intento: INT-20260723-005 (intento 5).'
+      - 'Intento anterior: INT-20260723-004 (modelo v2, resultado satisfactorio).'
+      - 'La aceptación humana del ciclo incluye los resultados de INT-20260721-001, INT-20260723-002 e INT-20260723-004, y autoriza trabajar sobre el código existente para cargar las recetas.'
+      - 'Modelo actual: Recipe v2 (schemaVersion 2) con migración v1→v2, persistencia en localStorage.'
+      - 'Datos de ejemplo actuales: 2 recetas (tortilla, lentejas) definidas en src/domain/recipe.ts → exampleRecipes().'
+    archivos_autorizados:
+      - 'src/domain/recipe.ts — modificar exampleRecipes() o añadir nueva fuente de datos.'
+      - 'src/App.tsx — modificar initialState() si es necesario.'
+      - 'src/domain/ — añadir nuevo archivo para las recetas cargadas (ej: recetas-cargadas.ts).'
+      - 'recetas_extraidas.md — solo lectura; fuente de las 55 recetas.'
+    archivos_protegidos:
+      - 'src/domain/recipe.ts — no cambiar tipos, interfaces, validación ni migración.'
+      - 'src/storage/recipe-storage.ts — no modificar.'
+      - 'src/domain/search.ts — no modificar.'
+      - 'memoria/** — no modificar (salvo nuevo registro de intento y sobre de transporte).'
+      - 'tests/** — las pruebas existentes no deben romperse.'
+    archivos_externos:
+      - 'docs/modelo-recetas-v2.md — referencia de diseño, no modificar.'
+    decisiones_humanas_aplicables:
+      - DEC-20260723-001: aceptación del MVP, recetas extraídas y modelo v2.
+      - La carga de las 55 recetas queda fuera del alcance original del ciclo; se trata como extensión autorizada por el humano.
+    estado_a_recuperar:
+      - 'recetas_extraidas.md: SHA-256 F25FF7F44FDD5786138864C9B473FDD19E3C35A99AC2D2E79D8F899D4A2F80CA, 458 líneas, 55 recetas/preparaciones.'
+      - 'src/domain/recipe.ts: modelo v2 vigente, exampleRecipes() actualmente con 2 recetas.'
+      - 'npm test: 5 archivos y 33/33 pruebas deben seguir pasando.'
+      - 'npm run typecheck: debe aprobar.'
+      - 'npm run build: debe aprobar.'
+    riesgos_conocidos:
+      - '55 recetas son muchos datos iniciales; puede ralentizar la carga inicial.'
+      - 'Algunas recetas tienen preparación no visible ("no visible") o ingredientes incompletos; deben representarse fielmente, sin inventar.'
+      - '3 dudas marcadas (Goulash roux, Scrippelle agua, Sarde in saor cebolla) y 2 continuaciones ausentes (albóndigas, gravlax).'
+    condiciones_de_parada:
+      - 'Si una receta no puede representarse fielmente con el modelo v2 actual, detenerse y documentar el caso.'
+      - 'No modificar el modelo de datos para acomodar una receta; documentar la limitación.'
+      - 'No eliminar, modificar ni ocultar los datos de ejemplo originales sin preservar la funcionalidad de ejemplo.'
+      - 'No escribir fuera de las rutas autorizadas.'
+    superficie_requerida:
+      - 'Navegador para el recorrido interactivo final (anfitrión).'
+      - 'Consola/terminal para pruebas estáticas (Ejecutor o anfitrión).'
+    prueba_previa_sin_cambios:
+      - 'Antes de editar: npm test, npm run typecheck, npm run build deben aprobar.'
+      - 'Verificar que recetas_extraidas.md está presente con su huella.'
+    responsable_interaccion: 'Anfitrión (humano) para el recorrido en navegador.'
+    condicion_salida:
+      - 'Recorrido en navegador: abrir app, observar al menos 10 recetas listadas, abrir detalle de una receta compleja (ej: Fresas con crema o Lingote de chocolate), verificar que ingredientes y pasos son legibles.'
+    acciones_prohibidas:
+      - 'No consolidar ni cerrar el ciclo.'
+      - 'No modificar el modelo de datos (tipos, interfaces, validación, migración, storage).'
+      - 'No modificar recetas_extraidas.md.'
+      - 'No modificar tests existentes (solo añadir si es necesario).'
+      - 'No hacer commit.'
+
+  cambios_solicitados:
+    - '1. Leer recetas_extraidas.md completa y clasificar las 55 recetas según los tipos del modelo v2 (simples, compuestas, componentes, etc.).'
+    - '2. Crear un archivo src/domain/recetas-cargadas.ts que exporte una función obtenerRecetasCargadas(): Recipe[] con las 55 recetas convertidas al formato Recipe v2.'
+    - '3. Cada receta debe incluir: nombre, descripción (si existe), ingredientes con cantidades estructuradas, pasos con estado, fuente (imagen JPG), rendimiento cuando sea explícito (porciones, unidades, etc.), tiempos cuando estén presentes, y un array de incertidumbres para dudas o datos faltantes.'
+    - '4. Para recetas con preparación no visible: marcar preparationStatus: "absent" y documentar en incertidumbres.'
+    - '5. Para recetas incompletas (albóndigas, gravlax): marcar preparationStatus: "incomplete" y documentar en incertidumbres.'
+    - '6. Para las 3 dudas conocidas (Goulash roux, Scrippelle agua, Sarde in saor cebolla): añadir incertidumbres con state "uncertain" y la nota de la duda.'
+    - '7. Modificar src/domain/recipe.ts para que exampleRecipes() (o una nueva función de inicialización) devuelva las 55 recetas cargadas en lugar de las 2 de ejemplo actuales. Las recetas de ejemplo actuales pueden conservarse como comentario o eliminarse.'
+    - '8. Verificar que la aplicación carga y muestra correctamente las recetas: al abrir la app sin datos previos deben aparecer las 55 recetas.'
+    - '9. Asegurar que búsqueda, filtros, favoritos, edición, creación, eliminación, exportación e importación siguen funcionando con las recetas cargadas.'
+    - '10. No incluir las recetas de ejemplo actuales (tortilla, lentejas) a menos que también estén en recetas_extraidas.md.'
+
+  comprobacion_tecnica_esperada:
+    obligatorias:
+      - 'npm test: 5 archivos y ≥33/33 pruebas aprobadas (las pruebas existentes no deben fallar).'
+      - 'npm run typecheck: satisfactorio.'
+      - 'npm run build: producción generada sin errores.'
+      - 'Las 55 recetas están presentes al cargar la app sin datos previos (verificado en navegador).'
+      - 'Cada receta tiene id único, nombre no vacío y al menos ingredientes o pasos (o indicación explícita de ausencia).'
+      - 'Las fuentes de imagen se conservan como RecipeSource con kind "image".'
+      - 'Las 3 dudas y 2 continuaciones ausentes están documentadas como incertidumbres en las recetas correspondientes.'
+      - 'No se modificó el modelo Recipe, la migración ni el storage.'
+      - 'recetas_extraidas.md conserva su huella original.'
+    recomendadas:
+      - 'Al menos una receta con secciones (Fresas con crema, Pastrami, etc.) se representa correctamente con sections[].'
+      - 'Alguna receta compuesta (Titaina, Puerro compuesto) usa referencias a otras recetas si es necesario.'
+      - 'Rendimiento explícito para recetas que lo indican (ej: "x3", "aprox. 500 ml", "1 kg").'
+      - 'Conservar el texto original de ingredientes y pasos junto a la interpretación estructurada.'
+    contrato_vivacidad:
+      - 'Primera señal antes de 60 segundos.'
+      - 'Un sondeo tras 60 segundos sin progreso.'
+      - 'Una interrupción tras otros 60 segundos.'
+      - 'Una sola recuperación después de reconstruir la bóveda.'
+    metricas:
+      - 'Inicio, fin, duración, bytes, líneas, intervenciones, recuperaciones y tokens/contexto: null si el anfitrión no las aporta; no estimar.'
+huella_contenido: null

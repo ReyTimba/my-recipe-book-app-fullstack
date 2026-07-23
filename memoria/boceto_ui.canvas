@@ -1,0 +1,21 @@
+{
+	"nodes":[
+		{"id":"866560cee526f535","x":-518,"y":78,"width":763,"height":50,"type":"text","text":"a-b-c-d-e-f-g-h-i-j-k-l-m-n-ñ-o-p-q-r-s-t-u-v-w-x-y-z"},
+		{"id":"6ab6586f6dce4185","x":-518,"y":128,"width":763,"height":353,"type":"text","text":"nombre de la receta.\n\n\ningredientes\n\n\n\n(una foto del plato, esto es opcional, si no hay foto en su lugar se muestra el logo de la app)\n\n"},
+		{"id":"8b03234e547823a5","x":-518,"y":-4,"width":118,"height":82,"type":"text","text":"Carnes y Aves"},
+		{"id":"aaa3009d6d88682c","type":"text","text":"Pescados y Mariscos","x":-400,"y":-4,"width":140,"height":82},
+		{"id":"c28e1e4547c17cf8","x":-518,"y":-54,"width":98,"height":50,"type":"text","text":"logo"},
+		{"id":"129843c0163d8339","type":"text","text":"Salsas, Fondos y Aderezos","x":-140,"y":-4,"width":120,"height":80},
+		{"id":"df08845a169ac7b8","x":-20,"y":-4,"width":140,"height":80,"type":"text","text":"Guarniciones y Verduras"},
+		{"id":"c15aba9749c4e6c0","x":120,"y":-4,"width":125,"height":80,"type":"text","text":"Masas, Entrantes y Postres"},
+		{"id":"09d34a70f0695228","type":"text","text":"Arroces, Pastas y Guisos","x":-260,"y":-4,"width":120,"height":82},
+		{"id":"1440de71fa06217a","x":120,"y":-54,"width":125,"height":50,"type":"text","text":"tres puntitos"},
+		{"id":"89cc578d220edebe","x":-260,"y":-54,"width":140,"height":50,"type":"text","text":"Carta/Menu"},
+		{"id":"f07856f58a7c93b5","x":-52,"y":-54,"width":172,"height":50,"type":"text","text":"Buscar"},
+		{"id":"970a355091a9e7af","x":380,"y":152,"width":240,"height":306,"type":"text","text":"cuando doy clic es que muestra: \n+ los detalles de los pasos.\n+ escalar los ingredientes."},
+		{"id":"2f16534e0764b549","x":100,"y":-340,"width":420,"height":260,"type":"text","text":"al deslizar el dedo por el abecedario una lista temporal se muestra en pantalla con una lista de las recetas que empiezan por esa letra. \n\nel abecedario solo muestra las letras por las que empiezan todas las recetas o sea si ninguna receta empieza por ñ en el abecedario no aparecera la ñ\n\n"}
+	],
+	"edges":[
+		{"id":"2b617ce25cf5999d","fromNode":"970a355091a9e7af","fromSide":"left","toNode":"6ab6586f6dce4185","toSide":"right"}
+	]
+}
