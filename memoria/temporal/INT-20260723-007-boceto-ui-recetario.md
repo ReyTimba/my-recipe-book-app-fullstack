@@ -151,13 +151,6 @@ Ajustes iterativos realizados tras la aceptación inicial, sin nuevo ciclo:
 
 Estos cambios quedan registrados en el commit `6e92983`.
 
-### 2026-07-23 — Limpieza de filtros UI
-- Eliminado desplegable «Todas las etiquetas» del filtro.
-- Eliminado checkbox «Solo favoritas» del filtro.
-- Eliminada estrella de favorito en vista detalle.
-- Eliminado checkbox «Guardar como favorita» en formulario.
-- Lógica de favoritos conservada en el modelo por si se reactiva después.
-
 ## Relaciones
 
 - Ciclo: CIC-20260723-003
