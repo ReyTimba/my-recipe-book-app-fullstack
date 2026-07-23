@@ -35,9 +35,6 @@ export function RecipeDetail({ recipe, onBack, onEdit, onDelete, onToggleFavorit
       <div className="detail-toolbar">
         <button className="text-button" type="button" onClick={onBack}>← Volver</button>
         <div className="detail-actions">
-          <button className="secondary-button" type="button" onClick={onToggleFavorite}>
-            {recipe.favorite ? "★" : "☆"}
-          </button>
           <button className="secondary-button" type="button" onClick={onEdit}>Editar</button>
           <button className="danger-button" type="button" onClick={onDelete}>Eliminar</button>
         </div>

@@ -14,7 +14,7 @@ import {
   type RecipeDraft,
 } from "./domain/recipe";
 import { obtenerRecetasCargadas } from "./domain/recetas-cargadas";
-import { availableTags, filterRecipes } from "./domain/search";
+import { filterRecipes } from "./domain/search";
 import { type CategoriaId } from "./domain/categorias";
 import {
   exportRecipeBackup,
@@ -60,7 +60,7 @@ export default function App() {
   const [view, setView] = useState<View>({ kind: "list" });
   const [query, setQuery] = useState("");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [tag, setTag] = useState("");
+
   const [notice, setNotice] = useState("");
   const [deleteCandidate, setDeleteCandidate] = useState<Recipe | null>(null);
   const [importCandidate, setImportCandidate] = useState<Recipe[] | null>(null);
@@ -74,8 +74,6 @@ export default function App() {
     }
   }, [data]);
 
-  const tags = useMemo(() => availableTags(data.recipes), [data.recipes]);
-
   const filteredByCategory = useMemo(() => {
     if (!categoria) return data.recipes;
     const catTag = CATEGORIA_TAG[categoria];
@@ -83,8 +81,8 @@ export default function App() {
   }, [data.recipes, categoria]);
 
   const visibleRecipes = useMemo(
-    () => filterRecipes(filteredByCategory, { query, favoritesOnly, tag }),
-    [filteredByCategory, query, favoritesOnly, tag],
+    () => filterRecipes(filteredByCategory, { query, favoritesOnly, tag: "" }),
+    [filteredByCategory, query, favoritesOnly],
   );
 
   const alphabetFiltered = useMemo(() => {
@@ -170,7 +168,6 @@ export default function App() {
     setView({ kind: "list" });
     setQuery("");
     setFavoritesOnly(false);
-    setTag("");
   }
 
   if (view.kind === "form") {
@@ -217,18 +214,7 @@ export default function App() {
       <CategoryTabs activa={categoria} onSelect={(id) => { setCategoria(id); setLetterFilter(""); }} />
       <div className="app-content">
       <div className={`recipe-area${popupActivo ? " recipe-area--blur" : ""}`}>
-      <div className="filters">
-        <label className="favorite-check">
-          <input type="checkbox" checked={favoritesOnly} onChange={(e) => setFavoritesOnly(e.target.checked)} />
-          <span>Solo favoritas</span>
-        </label>
-        {tags.length > 0 && (
-          <select value={tag} onChange={(e) => setTag(e.target.value)} aria-label="Filtrar por etiqueta">
-            <option value="">Todas las etiquetas</option>
-            {tags.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        )}
-      </div>
+
 
       {alphabetFiltered.length > 0 ? (
         <div className="boceto-grid">

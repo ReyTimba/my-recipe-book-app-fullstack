@@ -153,7 +153,6 @@ export function RecipeForm({ recipe, onSave, onCancel }: RecipeFormProps) {
 
         {hasAdvancedData && <p className="section-help" role="status">Esta receta contiene datos avanzados. La edición básica conservará secciones, referencias, fuentes, conservación e incertidumbres.</p>}
 
-        <label className="favorite-check"><input type="checkbox" checked={draft.favorite} onChange={(event) => setDraft({ ...draft, favorite: event.target.checked })} /><span>Guardar como favorita</span></label>
         <div className="form-actions"><button className="secondary-button" type="button" onClick={onCancel}>Cancelar</button><button type="submit">{recipe ? "Guardar cambios" : "Crear receta"}</button></div>
       </form>
     </section>
