@@ -66,6 +66,7 @@ export default function App() {
   const [importCandidate, setImportCandidate] = useState<Recipe[] | null>(null);
   const [categoria, setCategoria] = useState<CategoriaId | null>(null);
   const [letterFilter, setLetterFilter] = useState("");
+  const [popupActivo, setPopupActivo] = useState(false);
 
   useEffect(() => {
     if (!data.persistenceBlocked) {
@@ -211,11 +212,11 @@ export default function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main className="app-shell app-shell--list">
       <TopBar query={query} onQueryChange={setQuery} />
       <CategoryTabs activa={categoria} onSelect={(id) => { setCategoria(id); setLetterFilter(""); }} />
-      <AlphabetStrip recipes={data.recipes} activeLetter={letterFilter} onLetterSelect={setLetterFilter} />
-
+      <div className="app-content">
+      <div className={`recipe-area${popupActivo ? " recipe-area--blur" : ""}`}>
       <div className="filters">
         <label className="favorite-check">
           <input type="checkbox" checked={favoritesOnly} onChange={(e) => setFavoritesOnly(e.target.checked)} />
@@ -258,6 +259,9 @@ export default function App() {
           onCancel={() => setImportCandidate(null)}
         />
       )}
+      </div>
+      <AlphabetStrip recipes={data.recipes} activeLetter={letterFilter} onLetterSelect={setLetterFilter} onPopupChange={setPopupActivo} onRecipeSelect={(id) => setView({ kind: "detail", recipeId: id })} />
+      </div>
     </main>
   );
 }

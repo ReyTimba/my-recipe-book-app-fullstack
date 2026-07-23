@@ -67,7 +67,33 @@ a { color: var(--accent); text-decoration: none; }
   width: 100%;
   min-height: 100vh;
   background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell--list {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.recipe-area {
+  flex: 1;
+  min-width: 0;
   padding-bottom: 1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transition: filter 0.15s;
+}
+
+.recipe-area--blur {
+  filter: blur(3px);
+  pointer-events: none;
 }
 
 /* ── TopBar ── */
@@ -225,35 +251,43 @@ a { color: var(--accent); text-decoration: none; }
   font-weight: 600;
 }
 
+
+
 /* ── AlphabetStrip ── */
 .alphabet-strip {
-  padding: 0 0.75rem;
+  width: 2.3rem;
+  flex-shrink: 0;
   background: var(--bg-card);
-  border-bottom: 1px solid var(--line);
+  border-left: 1px solid var(--line);
   position: relative;
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
 }
 
 .alpha-btns {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1px;
-  padding: 0.5rem 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0.35rem 0;
+  flex: 1;
   justify-content: center;
 }
 
 .alpha-btn {
   flex-shrink: 0;
-  width: 1.4rem;
+  width: 2.3rem;
   height: 1.6rem;
   padding: 0;
   border: 0;
   border-radius: 0.25rem;
   background: transparent;
   color: var(--ink-muted);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   display: grid;
   place-items: center;
@@ -267,31 +301,34 @@ a { color: var(--accent); text-decoration: none; }
 }
 
 .alpha-popup {
-  position: absolute;
-  bottom: 100%;
-  left: 0.75rem;
-  right: 0.75rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 60;
-  padding: 0.6rem 0.75rem;
-  border-radius: 0.6rem 0.6rem 0 0;
-  background: var(--bg-elevated);
-  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--line);
-  border-bottom: 0;
-  pointer-events: none;
+  width: min(75vw, 20rem);
+  max-height: 70vh;
+  padding: 1rem 0.75rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 252, 247, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(224, 213, 200, 0.4);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: hidden;
 }
 
 .alpha-popup-letter {
   flex-shrink: 0;
-  font-size: 1.5rem;
+  font-size: 3rem;
   font-weight: 700;
   color: var(--accent-dark);
   line-height: 1;
-  min-width: 1.5rem;
   text-align: center;
+  padding: 0 0.5rem;
 }
 
 .alpha-popup-list {
@@ -301,23 +338,33 @@ a { color: var(--accent); text-decoration: none; }
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
+  overflow-y: auto;
   flex: 1;
-  min-width: 0;
 }
 
-.alpha-popup-list li {
-  font-size: 0.75rem;
+.alpha-popup-item {
+  padding: 0.7rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 1.2rem;
   color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 500;
   line-height: 1.3;
+  transition: background 0.1s;
 }
 
-.alpha-popup-more {
-  color: var(--ink-muted) !important;
-  font-style: italic;
-  font-size: 0.7rem !important;
+.alpha-popup-item--hover {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+
+.alpha-popup-item--hover {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 600;
 }
 
 /* ── Filters ── */
