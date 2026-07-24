@@ -270,11 +270,11 @@ export default function App() {
 
   return (
     <main className="app-shell app-shell--list">
-      <TopBar query={query} onQueryChange={setQuery} searchActive={searchActive} onSearchClose={() => setSearchActive(false)} onSettings={() => setSettingsOpen(true)} onAddRecipe={() => setView({ kind: "form", recipeId: null })} onExport={exportBackup} onImport={importBackup} />
+      <TopBar query={query} onQueryChange={setQuery} searchActive={searchActive} onSearchClose={() => setSearchActive(false)} onSettings={() => setSettingsOpen(true)} onAddRecipe={() => setView({ kind: "form", recipeId: null })} onExport={exportBackup} onImport={importBackup} connected={connected} />
       <div className="app-content">
       <CategoryTabs activa={categoria} onSelect={(id) => { setCategoria(id); setLetterFilter(""); }} />
       <div className={`recipe-area${popupActivo ? " recipe-area--blur" : ""}`}>
-      <div className={`status-dot ${connected ? "status-dot--on" : "status-dot--off"}`} title={connected ? "Conectado" : "Sin conexión"}></div>
+
 
       {alphabetFiltered.length > 0 ? (
         <div className="boceto-grid">

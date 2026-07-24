@@ -9,9 +9,10 @@ interface TopBarProps {
   onAddRecipe?: () => void;
   onExport?: () => void;
   onImport?: (file: File) => void;
+  connected?: boolean;
 }
 
-export function TopBar({ query, onQueryChange, searchActive, onSearchClose, onSettings, onAddRecipe, onExport, onImport }: TopBarProps) {
+export function TopBar({ query, onQueryChange, searchActive, onSearchClose, onSettings, onAddRecipe, onExport, onImport, connected }: TopBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -28,6 +29,7 @@ export function TopBar({ query, onQueryChange, searchActive, onSearchClose, onSe
   return (
     <header className="topbar">
       <div className="topbar-left">
+        <span className={`status-dot2 ${connected === false ? "status-dot2--off" : "status-dot2--on"}`}></span>
         <span className="topbar-logo">Recetario</span>
       </div>
       <nav className="topbar-nav">
