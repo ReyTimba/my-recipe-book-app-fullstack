@@ -6,3 +6,6 @@ coverage/
 !.env.example
 *.local
 memoria/.obsidian/
+.vscode/
+backend/dist/
+backend/.env

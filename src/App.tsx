@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AlphabetStrip } from "./components/AlphabetStrip";
 import { CategoryTabs } from "./components/CategoryTabs";
 import { ConfirmDialog } from "./components/confirm-dialog";
@@ -7,8 +7,6 @@ import { RecipeDetail } from "./components/recipe-detail";
 import { RecipeForm } from "./components/recipe-form";
 import { TopBar } from "./components/TopBar";
 import {
-  exampleRecipes,
-  parseRecipeCollection,
   saveRecipeDraft,
   type Recipe,
   type RecipeDraft,
@@ -16,69 +14,73 @@ import {
 import { obtenerRecetasCargadas } from "./domain/recetas-cargadas";
 import { filterRecipes } from "./domain/search";
 import { type CategoriaId } from "./domain/categorias";
+import { loadSettings, saveSettings, type AppSettings } from "./domain/settings";
+import { SettingsPanel } from "./components/SettingsPanel";
 import {
   exportRecipeBackup,
   importRecipeBackup,
-  loadRecipes,
-  saveRecipes,
+  loadRecipes as loadFromStorage,
+  saveRecipes as saveToStorage,
 } from "./storage/recipe-storage";
+import { fetchRecipes, createRecipe, updateRecipe, deleteRecipe as deleteRecipeApi } from "./storage/api-client";
 
 type View =
   | { kind: "list" }
   | { kind: "detail"; recipeId: string }
   | { kind: "form"; recipeId: string | null };
 
-interface InitialState {
-  recipes: Recipe[];
-  persistenceBlocked: boolean;
-  warning: string;
-}
-
 function createId(): string {
   return globalThis.crypto?.randomUUID?.() ?? `receta-${Date.now()}-${Math.random()}`;
 }
 
-function initialState(): InitialState {
-  try {
-    const stored = loadRecipes(window.localStorage);
-    return {
-      recipes: stored ?? obtenerRecetasCargadas(),
-      persistenceBlocked: false,
-      warning: "",
-    };
-  } catch {
-    return {
-      recipes: [],
-      persistenceBlocked: true,
-      warning: "Los datos guardados no se pudieron leer. No se han reemplazado: importa una copia válida para recuperar el recetario.",
-    };
-  }
-}
-
 export default function App() {
-  const [data, setData] = useState<InitialState>(initialState);
   const [view, setView] = useState<View>({ kind: "list" });
   const [query, setQuery] = useState("");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
 
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [warning, setWarning] = useState("");
   const [notice, setNotice] = useState("");
   const [deleteCandidate, setDeleteCandidate] = useState<Recipe | null>(null);
   const [importCandidate, setImportCandidate] = useState<Recipe[] | null>(null);
   const [categoria, setCategoria] = useState<CategoriaId | null>(null);
   const [letterFilter, setLetterFilter] = useState("");
   const [popupActivo, setPopupActivo] = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settings, setSettings] = useState<AppSettings>(loadSettings);
+  const initialLoadDone = useRef(false);
 
   useEffect(() => {
-    if (!data.persistenceBlocked) {
-      saveRecipes(window.localStorage, data.recipes);
+    if (initialLoadDone.current) return;
+    initialLoadDone.current = true;
+    fetchRecipes()
+      .then(setRecipes)
+      .catch(() => {
+        const cached = loadFromStorage(window.localStorage);
+        if (cached) {
+          setRecipes(cached);
+          setWarning("Servidor no disponible. Cargando datos locales.");
+        } else {
+          setRecipes(obtenerRecetasCargadas());
+          setWarning("Servidor no disponible. Mostrando recetas de ejemplo.");
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      saveToStorage(window.localStorage, recipes);
     }
-  }, [data]);
+  }, [recipes, loading]);
 
   const filteredByCategory = useMemo(() => {
-    if (!categoria) return data.recipes;
+    if (!categoria) return recipes;
     const catTag = CATEGORIA_TAG[categoria];
-    return data.recipes.filter((r) => r.tags.includes(catTag));
-  }, [data.recipes, categoria]);
+    return recipes.filter((r) => r.tags.includes(catTag));
+  }, [recipes, categoria]);
 
   const visibleRecipes = useMemo(
     () => filterRecipes(filteredByCategory, { query, favoritesOnly, tag: "" }),
@@ -94,15 +96,15 @@ export default function App() {
 
   const selectedRecipe =
     view.kind === "detail" || (view.kind === "form" && view.recipeId)
-      ? data.recipes.find((recipe) => recipe.id === view.recipeId) ?? null
+      ? recipes.find((recipe) => recipe.id === view.recipeId) ?? null
       : null;
 
-  function updateRecipes(recipes: Recipe[], message: string) {
-    setData({ recipes: parseRecipeCollection(recipes), persistenceBlocked: false, warning: "" });
+  function updateLocal(updated: Recipe[], message: string) {
+    setRecipes(updated);
     setNotice(message);
   }
 
-  function saveDraft(draft: RecipeDraft) {
+  async function saveDraft(draft: RecipeDraft) {
     const previous = view.kind === "form" && view.recipeId ? selectedRecipe ?? undefined : undefined;
     const id = previous?.id ?? createId();
     const recipe = saveRecipeDraft(draft, {
@@ -110,36 +112,56 @@ export default function App() {
       now: new Date().toISOString(),
       previous,
     });
-    const recipes = previous
-      ? data.recipes.map((item) => item.id === recipe.id ? recipe : item)
-      : [recipe, ...data.recipes];
-    updateRecipes(recipes, previous ? "Receta actualizada." : "Receta creada.");
+    try {
+      if (previous) {
+        await updateRecipe(id, recipe);
+      } else {
+        await createRecipe(recipe);
+      }
+    } catch {
+      setNotice("No se pudo guardar en el servidor. Datos guardados localmente.");
+    }
+    const updated = previous
+      ? recipes.map((item) => item.id === recipe.id ? recipe : item)
+      : [recipe, ...recipes];
+    updateLocal(updated, previous ? "Receta actualizada." : "Receta creada.");
     setView({ kind: "detail", recipeId: recipe.id });
   }
 
-  function toggleFavorite(recipeId: string) {
+  async function toggleFavorite(recipeId: string) {
     const now = new Date().toISOString();
-    const recipes = data.recipes.map((recipe) =>
-      recipe.id === recipeId
-        ? { ...recipe, favorite: !recipe.favorite, updatedAt: now }
-        : recipe,
+    const recipe = recipes.find((r) => r.id === recipeId);
+    if (!recipe) return;
+    const updated = { ...recipe, favorite: !recipe.favorite, updatedAt: now };
+    try {
+      await updateRecipe(recipeId, updated);
+    } catch {
+      setNotice("No se pudo actualizar en el servidor.");
+    }
+    updateLocal(
+      recipes.map((r) => r.id === recipeId ? updated : r),
+      "Favoritos actualizados.",
     );
-    updateRecipes(recipes, "Favoritos actualizados.");
   }
 
-  function deleteRecipe(recipe: Recipe) {
-    if (data.recipes.some((item) => item.id !== recipe.id && item.references.some((ref) => ref.targetRecipeId === recipe.id))) {
+  async function deleteRecipe(recipe: Recipe) {
+    if (recipes.some((item) => item.id !== recipe.id && item.references.some((ref) => ref.targetRecipeId === recipe.id))) {
       setDeleteCandidate(null);
       setNotice("No se puede eliminar: otra receta la usa como preparación relacionada.");
       return;
     }
-    updateRecipes(data.recipes.filter((item) => item.id !== recipe.id), "Receta eliminada.");
+    try {
+      await deleteRecipeApi(recipe.id);
+    } catch {
+      setNotice("No se pudo eliminar en el servidor. Datos actualizados localmente.");
+    }
+    updateLocal(recipes.filter((item) => item.id !== recipe.id), "Receta eliminada.");
     setDeleteCandidate(null);
     setView({ kind: "list" });
   }
 
   function exportBackup() {
-    const content = exportRecipeBackup(data.recipes, new Date().toISOString());
+    const content = exportRecipeBackup(recipes, new Date().toISOString());
     const url = URL.createObjectURL(new Blob([content], { type: "application/json" }));
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -153,21 +175,38 @@ export default function App() {
 
   async function importBackup(file: File) {
     try {
-      const recipes = importRecipeBackup(await file.text());
-      setImportCandidate(recipes);
+      const imported = importRecipeBackup(await file.text());
+      setImportCandidate(imported);
       setNotice("Copia validada. Confirma si quieres restaurarla.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "No se pudo importar la copia.");
     }
   }
 
-  function confirmImport() {
+  async function confirmImport() {
     if (!importCandidate) return;
-    updateRecipes(importCandidate, `Copia restaurada: ${importCandidate.length} recetas.`);
+    for (const recipe of importCandidate) {
+      try {
+        await createRecipe(recipe);
+      } catch {
+        setNotice("Error al restaurar algunas recetas en el servidor.");
+      }
+    }
+    updateLocal(importCandidate, `Copia restaurada: ${importCandidate.length} recetas.`);
     setImportCandidate(null);
     setView({ kind: "list" });
     setQuery("");
     setFavoritesOnly(false);
+  }
+
+  if (loading) {
+    return (
+      <main className="app-shell">
+        <div className="empty-state">
+          <h3>Cargando recetario...</h3>
+        </div>
+      </main>
+    );
   }
 
   if (view.kind === "form") {
@@ -210,11 +249,10 @@ export default function App() {
 
   return (
     <main className="app-shell app-shell--list">
-      <TopBar query={query} onQueryChange={setQuery} />
-      <CategoryTabs activa={categoria} onSelect={(id) => { setCategoria(id); setLetterFilter(""); }} />
+      <TopBar query={query} onQueryChange={setQuery} searchActive={searchActive} onSearchClose={() => setSearchActive(false)} onSettings={() => setSettingsOpen(true)} />
       <div className="app-content">
+      <CategoryTabs activa={categoria} onSelect={(id) => { setCategoria(id); setLetterFilter(""); }} />
       <div className={`recipe-area${popupActivo ? " recipe-area--blur" : ""}`}>
-
 
       {alphabetFiltered.length > 0 ? (
         <div className="boceto-grid">
@@ -222,7 +260,7 @@ export default function App() {
             <RecipeCard
               key={recipe.id}
               recipe={recipe}
-              onOpen={() => setView({ kind: "detail", recipeId: recipe.id })}
+              onOpen={() => { setSearchActive(false); setQuery(""); setView({ kind: "detail", recipeId: recipe.id }); }}
             />
           ))}
         </div>
@@ -233,7 +271,7 @@ export default function App() {
         </div>
       )}
 
-      {data.warning && <div className="warning-banner" role="alert">{data.warning}</div>}
+      {warning && <div className="warning-banner" role="alert">{warning}</div>}
       <p className="sr-only" aria-live="polite">{notice}</p>
 
       {importCandidate && (
@@ -245,8 +283,21 @@ export default function App() {
           onCancel={() => setImportCandidate(null)}
         />
       )}
+      {settingsOpen && (
+        <SettingsPanel
+          anchorDelay={settings.anchorDelay}
+          unanchorDelay={settings.unanchorDelay}
+          onSave={(a, u) => {
+            const next = { ...settings, anchorDelay: a, unanchorDelay: u };
+            setSettings(next);
+            saveSettings(next);
+            setSettingsOpen(false);
+          }}
+          onClose={() => setSettingsOpen(false)}
+        />
+      )}
       </div>
-      <AlphabetStrip recipes={data.recipes} activeLetter={letterFilter} onLetterSelect={setLetterFilter} onPopupChange={setPopupActivo} onRecipeSelect={(id) => setView({ kind: "detail", recipeId: id })} />
+      <AlphabetStrip recipes={recipes} activeLetter={letterFilter} onLetterSelect={(letter) => { setLetterFilter(letter); setCategoria(null); }} onPopupChange={setPopupActivo} onRecipeSelect={(id) => { setSearchActive(false); setQuery(""); setView({ kind: "detail", recipeId: id }); }} onSearchClick={() => { setSearchActive((a) => !a); setLetterFilter(""); }} anchorDelay={settings.anchorDelay} unanchorDelay={settings.unanchorDelay} />
       </div>
     </main>
   );

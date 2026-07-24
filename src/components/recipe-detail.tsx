@@ -14,8 +14,8 @@ function minutes(value: number | null): string {
 }
 
 export function RecipeDetail({ recipe, onBack, onEdit, onDelete, onToggleFavorite }: RecipeDetailProps) {
-  const [porciones, setPorciones] = useState(recipe.servings ?? 1);
-  const escala = recipe.servings ? porciones / recipe.servings : 1;
+  const [porciones, setPorciones] = useState(1);
+  const escala = porciones;
   const total = recipe.prepMinutes === null || recipe.cookMinutes === null
     ? null
     : recipe.prepMinutes + recipe.cookMinutes;
@@ -42,9 +42,7 @@ export function RecipeDetail({ recipe, onBack, onEdit, onDelete, onToggleFavorit
 
       <div className="boceto-detail-photo">
         <div className="boceto-card-logo">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
-          </svg>
+          <span style={{fontSize: "48px", lineHeight: 1}}>🍲</span>
         </div>
       </div>
 
@@ -61,8 +59,9 @@ export function RecipeDetail({ recipe, onBack, onEdit, onDelete, onToggleFavorit
       </header>
 
       <section className="detail-scale">
-        <label>
-          <span>Porciones:</span>
+        <span>Escalar:</span>
+        <div className="scale-control">
+          <button className="scale-btn" type="button" onClick={() => setPorciones((p) => Math.max(0.5, p - 0.5))}>−</button>
           <input
             type="number"
             min="0.5"
@@ -70,7 +69,8 @@ export function RecipeDetail({ recipe, onBack, onEdit, onDelete, onToggleFavorit
             value={porciones}
             onChange={(e) => setPorciones(Math.max(0.5, Number(e.target.value)))}
           />
-        </label>
+          <button className="scale-btn" type="button" onClick={() => setPorciones((p) => p + 0.5)}>+</button>
+        </div>
       </section>
 
       <div className="detail-content">

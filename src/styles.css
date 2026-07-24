@@ -80,13 +80,16 @@ a { color: var(--accent); text-decoration: none; }
   display: flex;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .recipe-area {
   flex: 1;
   min-width: 0;
+  min-height: 0;
   padding-bottom: 1rem;
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   transition: filter 0.15s;
 }
@@ -212,43 +215,47 @@ a { color: var(--accent); text-decoration: none; }
   border-color: var(--accent);
 }
 
-/* ── CategoryTabs ── */
-.category-tabs {
+/* ── Category sidebar ── */
+.category-footer {
   display: flex;
-  gap: 0.35rem;
-  padding: 0.75rem 1rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  background: var(--bg);
-  border-bottom: 1px solid var(--line);
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 2.125rem 0.25rem 0.5rem;
+  background: var(--bg-card);
+  border-right: 1px solid var(--line);
+  flex-shrink: 0;
+  width: 2.5rem;
+  justify-content: flex-start;
 }
 
-.category-tabs::-webkit-scrollbar { display: none; }
-
-.category-tab {
+.category-footer-btn {
   flex-shrink: 0;
-  padding: 0.4rem 0.85rem;
-  border: 1.5px solid var(--line);
-  border-radius: 2rem;
-  background: var(--bg-card);
-  color: var(--ink-secondary);
-  font-size: 0.8rem;
-  font-weight: 500;
-  white-space: nowrap;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 1.1rem;
+  display: grid;
+  place-items: center;
   transition: all 0.15s;
 }
 
-.category-tab:hover {
-  border-color: var(--accent);
-  color: var(--accent-dark);
+.category-footer-btn:hover {
+  background: var(--accent-soft);
 }
 
-.category-tab.active {
-  border-color: var(--accent);
+.category-footer-btn.active {
   background: var(--accent-soft);
   color: var(--accent-dark);
-  font-weight: 600;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.category-footer-icon {
+  line-height: 1;
 }
 
 
@@ -272,10 +279,10 @@ a { color: var(--accent); text-decoration: none; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 0.35rem 0;
+  gap: 4px;
+  padding: 4rem 0 0.35rem;
   flex: 1;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .alpha-btn {
@@ -294,21 +301,91 @@ a { color: var(--accent); text-decoration: none; }
   transition: background 0.05s, color 0.05s;
 }
 
+.alpha-btn-search {
+  flex-shrink: 0;
+  width: 2.3rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.alpha-btn-search:hover {
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+}
+
 .alpha-btn[data-active] {
   background: var(--accent-soft);
-  color: var(--accent-dark);
-  font-weight: 700;
+}
+
+.alpha-btn[data-anchored] {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  border-radius: 0.25rem;
+}
+
+.topbar-divider {
+  margin: 0.25rem 0;
+  border: 0;
+  height: 1px;
+  background: var(--line);
+}
+
+.settings-dialog {
+  width: 100%;
+  max-width: 28rem;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background: var(--bg-elevated);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.settings-dialog h2 {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.settings-field input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: var(--bg-input);
+  color: var(--ink);
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.settings-hint {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--ink-secondary);
+  line-height: 1.4;
 }
 
 .alpha-popup {
   position: fixed;
-  top: 50%;
+  top: 8vh;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   z-index: 60;
   width: min(75vw, 20rem);
-  max-height: 70vh;
-  padding: 1rem 0.75rem;
+  max-height: 80vh;
+  padding: 1rem 0.75rem 0.75rem;
   border-radius: 1.25rem;
   background: rgba(255, 252, 247, 0.88);
   backdrop-filter: blur(16px);
@@ -318,7 +395,6 @@ a { color: var(--accent); text-decoration: none; }
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  overflow: hidden;
 }
 
 .alpha-popup-letter {
@@ -339,13 +415,12 @@ a { color: var(--accent); text-decoration: none; }
   flex-direction: column;
   gap: 0.1rem;
   overflow-y: auto;
-  flex: 1;
 }
 
 .alpha-popup-item {
-  padding: 0.7rem 1rem;
-  border-radius: 0.75rem;
-  font-size: 1.2rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
   color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
@@ -353,12 +428,6 @@ a { color: var(--accent); text-decoration: none; }
   font-weight: 500;
   line-height: 1.3;
   transition: background 0.1s;
-}
-
-.alpha-popup-item--hover {
-  background: var(--accent-soft);
-  color: var(--accent-dark);
-  font-weight: 600;
 }
 
 .alpha-popup-item--hover {
@@ -404,8 +473,9 @@ a { color: var(--accent); text-decoration: none; }
 /* ── Boceto Recipe Card ── */
 .boceto-grid {
   display: grid;
+  grid-template-columns: 1fr;
   gap: 0.75rem;
-  padding: 0.5rem 1rem 1rem;
+  padding: 0.5rem 0.5rem 1rem;
 }
 
 @media (min-width: 640px) {
@@ -429,6 +499,7 @@ a { color: var(--accent); text-decoration: none; }
   padding: 0.75rem;
   cursor: pointer;
   transition: box-shadow 0.2s, border-color 0.2s;
+  width: 100%;
 }
 
 .boceto-card:hover {
@@ -438,8 +509,8 @@ a { color: var(--accent); text-decoration: none; }
 
 .boceto-card-photo {
   flex-shrink: 0;
-  width: 5rem;
-  height: 5rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 0.5rem;
   background: var(--accent-soft);
   display: grid;
@@ -459,15 +530,19 @@ a { color: var(--accent); text-decoration: none; }
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
+  overflow: hidden;
 }
 
 .boceto-card-title {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--ink);
   line-height: 1.3;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 .boceto-card-ingredients {
@@ -483,9 +558,6 @@ a { color: var(--accent); text-decoration: none; }
   font-size: 0.75rem;
   color: var(--ink-secondary);
   line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .boceto-card-qty {
@@ -582,29 +654,67 @@ a { color: var(--accent); text-decoration: none; }
 }
 
 .detail-scale {
-  margin-bottom: 1rem;
-}
-
-.detail-scale label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
   font-size: 0.85rem;
   color: var(--ink-secondary);
 }
 
-.detail-scale input {
-  width: 4rem;
-  padding: 0.35rem 0.5rem;
+.scale-control {
+  display: flex;
+  align-items: center;
+  gap: 0;
   border: 1.5px solid var(--line);
-  border-radius: 0.35rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
   background: var(--bg-input);
-  color: var(--ink);
-  font-size: 0.85rem;
-  text-align: center;
 }
 
-.detail-scale input:focus {
+.scale-btn {
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  border: 0;
+  background: var(--bg-card);
+  color: var(--ink);
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.scale-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.scale-control input {
+  width: 3rem;
+  padding: 0.35rem 0;
+  border: 0;
+  border-left: 1.5px solid var(--line);
+  border-right: 1.5px solid var(--line);
+  border-radius: 0;
+  background: var(--bg-input);
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.scale-control input::-webkit-outer-spin-button,
+.scale-control input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.scale-control input:focus {
+  outline: none;
   border-color: var(--accent);
 }
 

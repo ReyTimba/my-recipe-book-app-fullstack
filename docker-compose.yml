@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: recetario
+      POSTGRES_USER: recetario
+      POSTGRES_PASSWORD: recetario
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://recetario:recetario@db:5432/recetario?schema=public
+      PORT: "3001"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface TopBarProps {
   query: string;
   onQueryChange: (value: string) => void;
+  searchActive: boolean;
+  onSearchClose: () => void;
+  onSettings?: () => void;
 }
 
-export function TopBar({ query, onQueryChange }: TopBarProps) {
+export function TopBar({ query, onQueryChange, searchActive, onSearchClose, onSettings }: TopBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setSearchOpen(searchActive);
+  }, [searchActive]);
+
+  useEffect(() => {
+    if (searchOpen && searchRef.current) searchRef.current.focus();
+  }, [searchOpen]);
 
   return (
     <header className="topbar">
@@ -18,16 +30,6 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
         <button className="topbar-link" type="button">Carta/Menú</button>
       </nav>
       <div className="topbar-right">
-        <button
-          className="topbar-icon"
-          type="button"
-          onClick={() => setSearchOpen(!searchOpen)}
-          aria-label="Buscar"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.3-4.3" />
-          </svg>
-        </button>
         <button
           className="topbar-icon"
           type="button"
@@ -43,17 +45,20 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
             <button type="button" onClick={() => setMenuOpen(false)}>Añadir receta</button>
             <button type="button" onClick={() => setMenuOpen(false)}>Importar</button>
             <button type="button" onClick={() => setMenuOpen(false)}>Exportar</button>
+            <hr className="topbar-divider" />
+            <button type="button" onClick={() => { setMenuOpen(false); onSettings?.(); }}>Ajustes</button>
           </div>
         )}
       </div>
       {searchOpen && (
         <div className="topbar-search">
           <input
+            ref={searchRef}
             type="search"
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
+
             placeholder="Buscar recetas..."
-            autoFocus
           />
         </div>
       )}
