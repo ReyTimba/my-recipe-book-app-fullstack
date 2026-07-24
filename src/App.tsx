@@ -52,46 +52,29 @@ export default function App() {
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
   const initialLoadDone = useRef(false);
 
-  async function tryFetch(retries: number): Promise<Recipe[]> {
-    for (let i = 0; i < retries; i++) {
-      try {
-        return await fetchRecipes();
-      } catch {
-        if (i < retries - 1) await new Promise((r) => setTimeout(r, 3000));
-      }
-    }
-    throw new Error("API no disponible");
-  }
-
   useEffect(() => {
     if (initialLoadDone.current) return;
     initialLoadDone.current = true;
+    const local = loadFromStorage(window.localStorage);
+    if (local) {
+      setRecipes(local);
+      setLoading(false);
+    }
     (async () => {
       try {
-        const apiRecipes = await tryFetch(3);
-        if (apiRecipes.length === 0) {
-          const cached = loadFromStorage(window.localStorage);
-          if (cached && cached.length > 0) {
-            for (const r of cached) {
-              const { schemaVersion: _, id: _id, createdAt: _ca, updatedAt: _ua, ...payload } = r;
-              try { await createRecipe(payload as Recipe); } catch {}
-            }
-            const fresh = await tryFetch(3);
-            setRecipes(fresh);
-            setNotice("Recetas locales subidas al servidor.");
-          } else {
-            setRecipes(obtenerRecetasCargadas());
-            setWarning("Servidor vacío. Mostrando recetas de ejemplo.");
-          }
-        } else {
+        const apiRecipes = await fetchRecipes();
+        if (apiRecipes.length > 0) {
           setRecipes(apiRecipes);
+        } else if (local && local.length > 0) {
+          for (const r of local) {
+            const { schemaVersion: _, id: _id, createdAt: _ca, updatedAt: _ua, ...payload } = r;
+            try { await createRecipe(payload as Recipe); } catch {}
+          }
+          setRecipes(await fetchRecipes());
+          setNotice("Recetas locales subidas al servidor.");
         }
       } catch {
-        const cached = loadFromStorage(window.localStorage);
-        if (cached) {
-          setRecipes(cached);
-          setNotice("Usando datos locales. La API no está disponible.");
-        } else {
+        if (!local) {
           setRecipes(obtenerRecetasCargadas());
           setWarning("Servidor no disponible. Mostrando recetas de ejemplo.");
         }
