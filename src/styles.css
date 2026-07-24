@@ -1143,3 +1143,24 @@ a { color: var(--accent); text-decoration: none; }
   gap: 0.75rem;
   justify-content: flex-end;
 }
+
+.status-dot {
+  position: fixed;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  z-index: 200;
+  transition: background 0.3s;
+}
+
+.status-dot--on {
+  background: #22c55e;
+  box-shadow: 0 0 4px rgba(34, 197, 94, 0.5);
+}
+
+.status-dot--off {
+  background: #ef4444;
+  box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
+}

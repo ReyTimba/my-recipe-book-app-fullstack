@@ -22,7 +22,7 @@ import {
   loadRecipes as loadFromStorage,
   saveRecipes as saveToStorage,
 } from "./storage/recipe-storage";
-import { fetchRecipes, createRecipe, updateRecipe, deleteRecipe as deleteRecipeApi } from "./storage/api-client";
+import { fetchRecipes, createRecipe, updateRecipe, deleteRecipe as deleteRecipeApi, healthCheck } from "./storage/api-client";
 
 type View =
   | { kind: "list" }
@@ -50,7 +50,15 @@ export default function App() {
   const [searchActive, setSearchActive] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
+  const [connected, setConnected] = useState(true);
   const initialLoadDone = useRef(false);
+
+  useEffect(() => {
+    const check = () => healthCheck().then(setConnected);
+    check();
+    const id = setInterval(check, 30000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     if (initialLoadDone.current) return;
@@ -266,6 +274,7 @@ export default function App() {
       <div className="app-content">
       <CategoryTabs activa={categoria} onSelect={(id) => { setCategoria(id); setLetterFilter(""); }} />
       <div className={`recipe-area${popupActivo ? " recipe-area--blur" : ""}`}>
+      <div className={`status-dot ${connected ? "status-dot--on" : "status-dot--off"}`} title={connected ? "Conectado" : "Sin conexión"}></div>
 
       {alphabetFiltered.length > 0 ? (
         <div className="boceto-grid">
