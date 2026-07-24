@@ -81,6 +81,7 @@ export default function App() {
       setRecipes(local);
       setLoading(false);
     }
+    // sync
     (async () => {
       try {
         const apiRecipes = await fetchRecipes();
