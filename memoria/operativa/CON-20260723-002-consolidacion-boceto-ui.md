@@ -44,9 +44,13 @@ Aplicación web React 19 + TypeScript 7 + Vite 8, diseño responsive mobile-firs
 ## Ajustes finales
 
 - Abecedario en barra lateral vertical derecha (2.3rem) con letras compactas.
-- Popup centrado con efecto vidrio (frosted glass), interactivo: selección de receta sin levantar el dedo.
+- Categorías en barra lateral izquierda con iconos (⊞ para Todas, más 6 emojis de cocina).
+- Popup de abecedario fijo arriba con efecto vidrio, scroll automático al arrastrar cerca del borde.
 - Fondo de recetas se difumina al mostrar el popup.
-- Eliminados controles de filtro: desplegable «Todas las etiquetas», checkbox «Solo favoritas», estrella de favorito en vista detalle, checkbox «Guardar como favorita» en formulario. La lógica de favoritos se conserva en el modelo y puede restaurarse si se desea.
+- Búsqueda mediante lupa en barra del abecedario, toggle on/off.
+- Escalador de recetas en detalle con botones −/+, step 0.5, mínimo 0.5.
+- Fichas de receta adaptadas al ancho disponible entre barras laterales.
+- Eliminados controles de filtro: desplegable «Todas las etiquetas», checkbox «Solo favoritas», estrella de favorito en vista detalle, checkbox «Guardar como favorita» en formulario. La lógica de favoritos se conserva en el modelo.
 
 ## Trazabilidad
 

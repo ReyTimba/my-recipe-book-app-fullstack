@@ -158,6 +158,17 @@ Estos cambios quedan registrados en el commit `6e92983`.
 - Eliminado checkbox «Guardar como favorita» en formulario.
 - Lógica de favoritos conservada en el modelo.
 
+### 2026-07-23 — Ajustes UI finales
+- Abecedario movido a barra lateral derecha (vertical), categorías a barra lateral izquierda con iconos.
+- Popup de abecedario fijado arriba (5vh), letra fuera de la lista y con fondo transparente, luego revertido a dentro de la lista con posición fija arriba.
+- Búsqueda: icono lupa en barra del abecedario (arriba), quitada del header. Toggle al pulsar. Buscar cerrado al navegar a detalle, query limpiado.
+- Input de buscar con `searchActive` controlado desde App para que al volver del detalle no quede abierto.
+- Scroll automático en lista temporal al arrastrar cerca del borde (50px, velocidad 10px/frame).
+- Escalador de recetas en detalle: botones −/+, step 0.5, mínimo 0.5, empieza en 1. Etiqueta «Escalar».
+- Fichas de receta adaptadas al ancho entre barras, nombre con `overflow-wrap: break-word`.
+- Scroll horizontal corregido: quitado `white-space: nowrap` de ingredientes, imágenes fijas a 4rem.
+- Quitado `overflow: hidden` del body para permitir scroll en detalle.
+
 ## Incidencias de proceso SOR
 
 Durante este ciclo se detectaron las siguientes desviaciones del método SOR:
