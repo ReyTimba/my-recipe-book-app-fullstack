@@ -22,7 +22,7 @@ import {
   loadRecipes as loadFromStorage,
   saveRecipes as saveToStorage,
 } from "./storage/recipe-storage";
-import { fetchRecipes, createRecipe, updateRecipe, deleteRecipe as deleteRecipeApi, healthCheck } from "./storage/api-client";
+import { fetchRecipes, createRecipe, updateRecipe, deleteRecipe as deleteRecipeApi } from "./storage/api-client";
 
 type View =
   | { kind: "list" }
@@ -50,15 +50,8 @@ export default function App() {
   const [searchActive, setSearchActive] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
-  const [connected, setConnected] = useState(true);
+  const [apiOk, setApiOk] = useState<boolean | null>(null);
   const initialLoadDone = useRef(false);
-
-  useEffect(() => {
-    const check = () => healthCheck().then(setConnected);
-    check();
-    const id = setInterval(check, 30000);
-    return () => clearInterval(id);
-  }, []);
 
   useEffect(() => {
     if (initialLoadDone.current) return;
@@ -71,6 +64,7 @@ export default function App() {
     (async () => {
       try {
         const apiRecipes = await fetchRecipes();
+        setApiOk(true);
         if (apiRecipes.length > 0) {
           setRecipes(apiRecipes);
         } else if (local && local.length > 0) {
@@ -82,6 +76,7 @@ export default function App() {
           setNotice("Recetas locales subidas al servidor.");
         }
       } catch {
+        setApiOk(false);
         if (!local) {
           setRecipes(obtenerRecetasCargadas());
           setWarning("Servidor no disponible. Mostrando recetas de ejemplo.");
@@ -139,7 +134,9 @@ export default function App() {
       } else {
         await createRecipe(recipe);
       }
+      setApiOk(true);
     } catch {
+      setApiOk(false);
       setNotice("No se pudo guardar en el servidor. Datos guardados localmente.");
     }
     const updated = previous
@@ -156,7 +153,9 @@ export default function App() {
     const updated = { ...recipe, favorite: !recipe.favorite, updatedAt: now };
     try {
       await updateRecipe(recipeId, updated);
+      setApiOk(true);
     } catch {
+      setApiOk(false);
       setNotice("No se pudo actualizar en el servidor.");
     }
     updateLocal(
@@ -173,7 +172,9 @@ export default function App() {
     }
     try {
       await deleteRecipeApi(recipe.id);
+      setApiOk(true);
     } catch {
+      setApiOk(false);
       setNotice("No se pudo eliminar en el servidor. Datos actualizados localmente.");
     }
     updateLocal(recipes.filter((item) => item.id !== recipe.id), "Receta eliminada.");
@@ -206,13 +207,16 @@ export default function App() {
 
   async function confirmImport() {
     if (!importCandidate) return;
+    let anyOk = false;
     for (const recipe of importCandidate) {
       try {
         await createRecipe(recipe);
+        anyOk = true;
       } catch {
         setNotice("Error al restaurar algunas recetas en el servidor.");
       }
     }
+    setApiOk(anyOk);
     updateLocal(importCandidate, `Copia restaurada: ${importCandidate.length} recetas.`);
     setImportCandidate(null);
     setView({ kind: "list" });
@@ -270,7 +274,7 @@ export default function App() {
 
   return (
     <main className="app-shell app-shell--list">
-      <TopBar query={query} onQueryChange={setQuery} searchActive={searchActive} onSearchClose={() => setSearchActive(false)} onSettings={() => setSettingsOpen(true)} onAddRecipe={() => setView({ kind: "form", recipeId: null })} onExport={exportBackup} onImport={importBackup} connected={connected} />
+      <TopBar query={query} onQueryChange={setQuery} searchActive={searchActive} onSearchClose={() => setSearchActive(false)} onSettings={() => setSettingsOpen(true)} onAddRecipe={() => setView({ kind: "form", recipeId: null })} onExport={exportBackup} onImport={importBackup} apiOk={apiOk} />
       <div className="app-content">
       <CategoryTabs activa={categoria} onSelect={(id) => { setCategoria(id); setLetterFilter(""); }} />
       <div className={`recipe-area${popupActivo ? " recipe-area--blur" : ""}`}>

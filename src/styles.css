@@ -129,6 +129,7 @@ a { color: var(--accent); text-decoration: none; }
   border-radius: 50%;
   flex-shrink: 0;
   transition: background 0.3s;
+  background: #9ca3af;
 }
 
 .status-dot2--on {
