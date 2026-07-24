@@ -55,9 +55,26 @@ export default function App() {
   useEffect(() => {
     if (initialLoadDone.current) return;
     initialLoadDone.current = true;
-    fetchRecipes()
-      .then(setRecipes)
-      .catch(() => {
+    (async () => {
+      try {
+        const apiRecipes = await fetchRecipes();
+        if (apiRecipes.length === 0) {
+          const cached = loadFromStorage(window.localStorage);
+          if (cached && cached.length > 0) {
+            for (const r of cached) {
+              try { await createRecipe(r); } catch {}
+            }
+            const fresh = await fetchRecipes();
+            setRecipes(fresh);
+            setNotice("Recetas locales subidas al servidor.");
+          } else {
+            setRecipes(obtenerRecetasCargadas());
+            setWarning("Servidor vacío. Mostrando recetas de ejemplo.");
+          }
+        } else {
+          setRecipes(apiRecipes);
+        }
+      } catch {
         const cached = loadFromStorage(window.localStorage);
         if (cached) {
           setRecipes(cached);
@@ -66,8 +83,9 @@ export default function App() {
           setRecipes(obtenerRecetasCargadas());
           setWarning("Servidor no disponible. Mostrando recetas de ejemplo.");
         }
-      })
-      .finally(() => setLoading(false));
+      }
+      setLoading(false);
+    })();
   }, []);
 
   useEffect(() => {
@@ -249,7 +267,7 @@ export default function App() {
 
   return (
     <main className="app-shell app-shell--list">
-      <TopBar query={query} onQueryChange={setQuery} searchActive={searchActive} onSearchClose={() => setSearchActive(false)} onSettings={() => setSettingsOpen(true)} />
+      <TopBar query={query} onQueryChange={setQuery} searchActive={searchActive} onSearchClose={() => setSearchActive(false)} onSettings={() => setSettingsOpen(true)} onAddRecipe={() => setView({ kind: "form", recipeId: null })} onExport={exportBackup} onImport={importBackup} />
       <div className="app-content">
       <CategoryTabs activa={categoria} onSelect={(id) => { setCategoria(id); setLetterFilter(""); }} />
       <div className={`recipe-area${popupActivo ? " recipe-area--blur" : ""}`}>

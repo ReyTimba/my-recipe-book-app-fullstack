@@ -6,12 +6,16 @@ interface TopBarProps {
   searchActive: boolean;
   onSearchClose: () => void;
   onSettings?: () => void;
+  onAddRecipe?: () => void;
+  onExport?: () => void;
+  onImport?: (file: File) => void;
 }
 
-export function TopBar({ query, onQueryChange, searchActive, onSearchClose, onSettings }: TopBarProps) {
+export function TopBar({ query, onQueryChange, searchActive, onSearchClose, onSettings, onAddRecipe, onExport, onImport }: TopBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const importRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setSearchOpen(searchActive);
@@ -42,13 +46,14 @@ export function TopBar({ query, onQueryChange, searchActive, onSearchClose, onSe
         </button>
         {menuOpen && (
           <div className="topbar-dropdown">
-            <button type="button" onClick={() => setMenuOpen(false)}>Añadir receta</button>
-            <button type="button" onClick={() => setMenuOpen(false)}>Importar</button>
-            <button type="button" onClick={() => setMenuOpen(false)}>Exportar</button>
+            <button type="button" onClick={() => { setMenuOpen(false); onAddRecipe?.(); }}>Añadir receta</button>
+            <button type="button" onClick={() => { setMenuOpen(false); importRef.current?.click(); }}>Importar</button>
+            <button type="button" onClick={() => { setMenuOpen(false); onExport?.(); }}>Exportar</button>
             <hr className="topbar-divider" />
             <button type="button" onClick={() => { setMenuOpen(false); onSettings?.(); }}>Ajustes</button>
           </div>
         )}
+        <input ref={importRef} type="file" accept=".json" style={{ display: "none" }} onChange={(e) => { const f = e.target.files?.[0]; if (f) { onImport?.(f); e.target.value = ""; }}} />
       </div>
       {searchOpen && (
         <div className="topbar-search">
