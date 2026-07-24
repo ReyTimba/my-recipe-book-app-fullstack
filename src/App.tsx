@@ -52,19 +52,31 @@ export default function App() {
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
   const initialLoadDone = useRef(false);
 
+  async function tryFetch(retries: number): Promise<Recipe[]> {
+    for (let i = 0; i < retries; i++) {
+      try {
+        return await fetchRecipes();
+      } catch {
+        if (i < retries - 1) await new Promise((r) => setTimeout(r, 3000));
+      }
+    }
+    throw new Error("API no disponible");
+  }
+
   useEffect(() => {
     if (initialLoadDone.current) return;
     initialLoadDone.current = true;
     (async () => {
       try {
-        const apiRecipes = await fetchRecipes();
+        const apiRecipes = await tryFetch(3);
         if (apiRecipes.length === 0) {
           const cached = loadFromStorage(window.localStorage);
           if (cached && cached.length > 0) {
             for (const r of cached) {
-              try { await createRecipe(r); } catch {}
+              const { schemaVersion: _, id: _id, createdAt: _ca, updatedAt: _ua, ...payload } = r;
+              try { await createRecipe(payload as Recipe); } catch {}
             }
-            const fresh = await fetchRecipes();
+            const fresh = await tryFetch(3);
             setRecipes(fresh);
             setNotice("Recetas locales subidas al servidor.");
           } else {
@@ -78,7 +90,7 @@ export default function App() {
         const cached = loadFromStorage(window.localStorage);
         if (cached) {
           setRecipes(cached);
-          setWarning("Servidor no disponible. Cargando datos locales.");
+          setNotice("Usando datos locales. La API no está disponible.");
         } else {
           setRecipes(obtenerRecetasCargadas());
           setWarning("Servidor no disponible. Mostrando recetas de ejemplo.");
