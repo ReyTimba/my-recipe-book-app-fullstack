@@ -22,7 +22,7 @@ import {
   loadRecipes as loadFromStorage,
   saveRecipes as saveToStorage,
 } from "./storage/recipe-storage";
-import { fetchRecipes, createRecipe, updateRecipe, deleteRecipe as deleteRecipeApi } from "./storage/api-client";
+import { fetchRecipes, createRecipe, updateRecipe, deleteRecipe as deleteRecipeApi, healthCheck } from "./storage/api-client";
 
 type View =
   | { kind: "list" }
@@ -51,7 +51,27 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
   const [apiOk, setApiOk] = useState<boolean | null>(null);
+  const lastSuccess = useRef(0);
   const initialLoadDone = useRef(false);
+
+  function markApiOk() {
+    lastSuccess.current = Date.now();
+    setApiOk(true);
+  }
+
+  useEffect(() => {
+    const check = async () => {
+      const ok = await healthCheck();
+      if (ok) {
+        markApiOk();
+      } else if (Date.now() - lastSuccess.current > 120000) {
+        setApiOk(false);
+      }
+    };
+    check();
+    const id = setInterval(check, 60000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     if (initialLoadDone.current) return;
@@ -64,7 +84,7 @@ export default function App() {
     (async () => {
       try {
         const apiRecipes = await fetchRecipes();
-        setApiOk(true);
+        markApiOk();
         if (apiRecipes.length > 0) {
           setRecipes(apiRecipes);
         } else if (local && local.length > 0) {
@@ -134,7 +154,7 @@ export default function App() {
       } else {
         await createRecipe(recipe);
       }
-      setApiOk(true);
+      markApiOk();
     } catch {
       setApiOk(false);
       setNotice("No se pudo guardar en el servidor. Datos guardados localmente.");
