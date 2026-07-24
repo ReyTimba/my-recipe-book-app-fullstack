@@ -12,7 +12,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: [`${BASE}icon-192.svg`, `${BASE}icon-512.svg`],
+      includeAssets: [`${BASE}icon-192.png`, `${BASE}icon-512.png`],
       scope: PWA_SCOPE,
       manifest: {
         name: "Mi recetario",
@@ -23,8 +23,9 @@ export default defineConfig({
         display: "standalone",
         start_url: PWA_START_URL,
         icons: [
-          { src: `${BASE}icon-192.svg`, sizes: "192x192", type: "image/svg+xml" },
-          { src: `${BASE}icon-512.svg`, sizes: "512x512", type: "image/svg+xml" },
+          { src: `${BASE}icon-192.png`, sizes: "192x192", type: "image/png" },
+          { src: `${BASE}icon-512.png`, sizes: "512x512", type: "image/png" },
+          { src: `${BASE}icon-512.png`, sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
       },
       workbox: {
